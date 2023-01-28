@@ -1,5 +1,6 @@
 const express = require("express");
 const jwt = require('jsonwebtoken');
+const { getNotifications } = require("../../controllers");
 const router = express.Router();
 
 router.get("/notices/:categoryName", async (req, res, next) => {
@@ -35,16 +36,15 @@ router.get("/notices/:id", async (req, res, next) => {
    });
  })
 
- app.get("/notifications", (req, res) => {
-  const userId = req.user._id;
-
-  getNotifications(userId)
-  .then((notifications) => {
-    res.json(notifications);
-  })
-  .catch((err) => {
-    res.status(500).send(err);
-  });
+ app.get("/notifications", async(req, res) => {
+  
+   try {
+    const userId = req.user._id;
+    const notifications = await getNotifications(userId)
+    res.json(notifications)
+   } catch(error) {
+    res.status(500).send(error);
+   }
  })
  
 
