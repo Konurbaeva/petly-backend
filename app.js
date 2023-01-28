@@ -1,15 +1,19 @@
 const express = require('express')
 const logger = require('morgan')
 const cors = require('cors')
+require("dotenv").config()
 
 const userRoutes = require('./routes/userRoutes');
-
+const jwt = require('jsonwebtoken');
 const app = express()
+
+const { getNotifications } = require("../../controllers");
 
 app.use(logger('short'))
 app.use(cors())
 app.use(express.json())
 
+const { SECRET_KEY } = process.env
 
 app.use('/api/users', userRoutes);
 
