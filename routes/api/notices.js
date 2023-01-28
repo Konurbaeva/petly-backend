@@ -22,18 +22,16 @@ router.get("/notices/:id", async (req, res, next) => {
  });
 
 
- router.post("/notices/favorites/:id", (req, res) => {
+ router.post("/notices/favorites/:id", async(req, res) => {
   // TODO check in mongo DB collection if userId/_userId/_id
+   try {
    const userId = req.body.userId;
    const favId = req.params.id;
-
-   addToFavorites(userId, favId)
-   .then((favorite) => {
-     res.json(favorite);
-   })
-   .catch((err) => {
-     res.status(500).send(err);
-   });
+   const favorite = await addToFavorites(userId, favId);
+   res.json(favorite);
+   }  catch(error) {
+    res.status(500).send(error);
+   }
  })
 
  app.get("/notifications", async(req, res) => {
