@@ -24,7 +24,7 @@ const loginController = async (req, res) => {
     if (!user) {
         throw RequestError(401, 'User with this email not found')
     }
-    
+
     if (!await bcrypt.compare(password, user.password)) {
         throw RequestError(401, 'Wrong password')
     }
@@ -34,7 +34,11 @@ const loginController = async (req, res) => {
     return res.status(200).json({ email, token });
 }
 
+const getCurrentController = async (req, res) => {
+    const { email } = req.user
+    return res.status(200).json({email})
+}
 
 module.exports = {
-    registerController, loginController
+    registerController, loginController, getCurrentController
 }
