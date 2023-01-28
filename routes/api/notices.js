@@ -19,6 +19,20 @@ router.get("/notices/:id", async (req, res, next) => {
   }
  });
 
+
+ router.post("/notices/favorites/:id", (req, res) => {
+  // TODO check in mongo DB collection if userId/_userId/_id
+   const userId = req.body.userId;
+   const favId = req.params.id;
+
+   addToFavorites(userId, favId)
+   .then((favorite) => {
+     res.json(favorite);
+   })
+   .catch((err) => {
+     res.status(500).send(err);
+   });
+ })
  
 
 module.exports = router;
