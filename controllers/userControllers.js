@@ -7,14 +7,13 @@ const RequestError = require('../helpers/RequestError')
 const { User } = require('../models/userModel');
 
 const registerController = async (req, res) => {
-    const { email, password } = req.body;
-
+    const { email } = req.body;
     if(await User.findOne({email})) {
         throw RequestError(409, "This email is already in use")
     }
-    const user = new User({ password, email });
+    const user = new User(req.body);
     await user.save();
-    return res.status(201).json({email});
+    return res.status(201).json(req.body);
 }
 
 const loginController = async (req, res) => {

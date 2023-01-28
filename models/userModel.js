@@ -3,7 +3,7 @@ const bcrypt = require('bcrypt');
 const Joi = require("Joi"); 
 
 const handleMongooseError = require('../helpers/handleMongooseError');
-
+const phoneRegExp = /^(\+\d{1,3}[- ]?)?\d{10}$/;
 const userSchema = new mongoose.Schema({
     password: {
         type: String,
@@ -13,6 +13,16 @@ const userSchema = new mongoose.Schema({
         type: String,
         required: [true , "Email is required"],
         unique: true
+    },
+    name: {
+        type: String,
+    },
+    address: {
+        type: String,
+    },
+    phone: {
+        type: String,
+        match: phoneRegExp,
     },
     token: {
         type: String,
@@ -32,6 +42,9 @@ userSchema.post('save', handleMongooseError)
 const registerSchema = Joi.object({
     password: Joi.string().required(),
     email: Joi.string().email().required(),
+    name: Joi.string(),
+    address: Joi.string(),
+    phone: Joi.string().pattern(phoneRegExp)
 });
 const loginSchema = Joi.object({
     password: Joi.string().required(),
