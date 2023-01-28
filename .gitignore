@@ -4,7 +4,6 @@
 .env
 package-lock.json
 
-
 #Junk
 .vscode/
 .idea/
