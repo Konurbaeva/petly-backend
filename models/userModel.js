@@ -1,5 +1,8 @@
 const mongoose = require('mongoose');
 const bcrypt = require('bcrypt');
+const Joi = require("Joi"); 
+
+const handleMongooseError = require('../helpers/handleMongooseError');
 
 const userSchema = new mongoose.Schema({
     password: {
@@ -24,8 +27,25 @@ userSchema.pre('save', async function EncryptPasswordBeforeSaving() {
     }
 });
 
+userSchema.post('save', handleMongooseError)
+
+const registerSchema = Joi.object({
+    password: Joi.string().required(),
+    email: Joi.string().email().required(),
+});
+const loginSchema = Joi.object({
+    password: Joi.string().required(),
+    email: Joi.string().email().required(),
+});
+
+const schemas = {
+    registerSchema,
+    loginSchema
+}
+
 const User = mongoose.model('User', userSchema);
 
 module.exports = {
-    User
+    User,
+    schemas,
 }
