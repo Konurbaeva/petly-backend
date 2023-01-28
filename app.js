@@ -1,6 +1,7 @@
 const express = require('express')
 const logger = require('morgan')
 const cors = require('cors')
+require("dotenv").config()
 
 const userRoutes = require('./routes/userRoutes');
 const jwt = require('jsonwebtoken');
@@ -12,9 +13,7 @@ app.use(logger('short'))
 app.use(cors())
 app.use(express.json())
 
-// TODO replace with the actual SECRET_KEY
-const SECRET_KEY = '';
-
+const { SECRET_KEY } = process.env
 
 app.use('/api/users', userRoutes);
 
