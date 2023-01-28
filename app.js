@@ -6,6 +6,8 @@ const userRoutes = require('./routes/userRoutes');
 const jwt = require('jsonwebtoken');
 const app = express()
 
+const { getNotifications } = require("../../controllers");
+
 app.use(logger('short'))
 app.use(cors())
 app.use(express.json())
@@ -35,5 +37,16 @@ app.use((req, res, next) => {
     res.status(401).send('Unauthorized');
   }
 });
+
+app.get("/notifications", async(req, res) => {
+  
+  try {
+   const userId = req.user._id;
+   const notifications = await getNotifications(userId)
+   res.json(notifications)
+  } catch(error) {
+   res.status(500).send(error);
+  }
+})
 
 module.exports = app

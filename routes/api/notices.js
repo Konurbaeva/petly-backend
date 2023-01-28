@@ -1,7 +1,9 @@
 const express = require("express");
 const jwt = require('jsonwebtoken');
-const { getNotifications } = require("../../controllers");
+
 const router = express.Router();
+
+const { getNoticesByCategory, getNoticeById, addToFavorites, removeFromFavorites } = require("../../controllers")
 
 router.get("/notices/:categoryName", async (req, res, next) => {
  const { categoryName } = req.params;
@@ -34,16 +36,15 @@ router.get("/notices/:id", async (req, res, next) => {
    }
  })
 
- app.get("/notifications", async(req, res) => {
-  
-   try {
-    const userId = req.user._id;
-    const notifications = await getNotifications(userId)
-    res.json(notifications)
-   } catch(error) {
-    res.status(500).send(error);
-   }
- })
+ router.delete("/notices/favorites/:id", async (req, res) => {
+  try {
+  const userId = req.user._id;
+  const favId = req.params.id;
+  const removedFavorite = await removeFromFavorites(userId, favId);
+  res.json(removedFavorite);
+  } catch (error) {
+  res.status(500).send(error);
+  }
+  });
  
-
 module.exports = router;
