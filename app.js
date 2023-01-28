@@ -27,26 +27,4 @@ app.use((err, req, res, next) => {
   res.status(status).json({ message })
 })
 
-app.use((req, res, next) => {
-  const token = req.headers.authorization;
-  try {
-    const decoded = jwt.verify(token, SECRET_KEY);
-    req.user = decoded;
-    next();
-  } catch (err) {
-    res.status(401).send('Unauthorized');
-  }
-});
-
-app.get("/notifications", async(req, res) => {
-  
-  try {
-   const userId = req.user._id;
-   const notifications = await getNotifications(userId)
-   res.json(notifications)
-  } catch(error) {
-   res.status(500).send(error);
-  }
-})
-
 module.exports = app
