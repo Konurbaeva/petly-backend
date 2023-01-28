@@ -16,13 +16,16 @@ const userSchema = new mongoose.Schema({
     },
     name: {
         type: String,
+        default: null
     },
     address: {
         type: String,
+        default: null
     },
     phone: {
         type: String,
         match: phoneRegExp,
+        default: null
     },
     token: {
         type: String,

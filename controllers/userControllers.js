@@ -43,6 +43,15 @@ const logoutController = async (req, res) => {
     return res.status(204).json();
 }
 
+const updateController = async (req, res) => { 
+    // console.log(req.user);
+    // console.log(req.body);
+    // const { _id } = req.user;
+    // await User.findByIdAndUpdate(_id, {...req.body}, {new: true});
+    
+    res.status(200).json(req.body)
+}
+
 module.exports = {
-    registerController, loginController, getCurrentController, logoutController
+    registerController, loginController, getCurrentController, logoutController, updateController
 }
