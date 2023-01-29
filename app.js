@@ -14,7 +14,7 @@ app.use(express.json());
 app.use("/api/users", userRoutes);
 app.use("/api/notices", noticesRoutes);
 
-// todo - temporary solution to errors
+
 app.use((req, res) => {
   res.status(404).json({ message: "Not found" });
 });

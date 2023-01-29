@@ -27,6 +27,14 @@ const userSchema = new mongoose.Schema({
         match: phoneRegExp,
         default: null
     },
+    birthday: {
+        type: String,
+        default: null
+    },
+    avatarURL: {
+        type: String,
+        default: null
+    },
     token: {
         type: String,
         default: null
