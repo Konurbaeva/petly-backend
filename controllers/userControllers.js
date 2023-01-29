@@ -44,12 +44,13 @@ const logoutController = async (req, res) => {
 }
 
 const updateController = async (req, res) => { 
-    // console.log(req.user);
-    // console.log(req.body);
-    // const { _id } = req.user;
-    // await User.findByIdAndUpdate(_id, {...req.body}, {new: true});
+    const { name: rName, email: rEmail, address: rAddress, phone: rPhone, birthday: rBirthday } = req.body;
+    const { _id } = req.user;
+
+    const updatedUser = await User.findByIdAndUpdate(_id, {name: rName, email: rEmail, address: rAddress, phone: rPhone, birthday: rBirthday}, {new: true});
     
-    res.status(200).json(req.body)
+    const { email, name, address, phone, birthday } = updatedUser
+    res.status(200).json({ email, name, address, phone, birthday });
 }
 
 module.exports = {
