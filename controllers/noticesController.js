@@ -45,22 +45,21 @@ const getNotifications = async (req, res) => {
   return res.status(200).json(result);
 };
 
-// const removeFromFavorites = async (req, res) => {
-//   //   TODO implement the logic to remove the notice from the user's favorites - how this collection will be called?
-//   //   will be notice or ad in Favorites collection/document?
-//   const userId = req.user._id;
-//   const favId = req.params.id;
-//   const removedFavorite = await Favorite.findOneAndRemove({
-//     user: userId,
-//     notice: favId,
-//   });
-//   return removedFavorite;
-// };
+const removeFromFavorites = async (req, res) => {
+  // is it req.user._id or  const userId = req.body.userId?
+  const userId = req.user._id;
+  const favId = req.params.id;
+  const removedFavorite = await User.findOneAndRemove({
+    user: userId,
+    notice: favId,
+  });
+  return removedFavorite;
+};
 
 module.exports = {
   getNoticesByCategory,
   getNoticeById,
   addToFavorites,
   getNotifications,
-  //   removeFromFavorites,
+  removeFromFavorites,
 };
