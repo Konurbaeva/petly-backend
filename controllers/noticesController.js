@@ -46,21 +46,45 @@ const getNotifications = async (req, res) => {
 };
 
 // const removeFromFavorites = async (req, res) => {
-//   //   TODO implement the logic to remove the notice from the user's favorites - how this collection will be called?
-//   //   will be notice or ad in Favorites collection/document?
+//   // is it req.user._id or  const userId = req.body.userId?
+//   //  const userId = req.body.userId;
 //   const userId = req.user._id;
 //   const favId = req.params.id;
-//   const removedFavorite = await Favorite.findOneAndRemove({
-//     user: userId,
-//     notice: favId,
-//   });
-//   return removedFavorite;
+
+//   const result = await User.findOneAndUpdate(
+//     { _id: userId },
+//     { $pull: { favorites: favId } },
+//     { new: true }
+//     );
+
+//     if(!result) {
+//       throw RequestError(404, "Not found");
+//       }
+//     return res.status(200).json(result);
 // };
+const removeFromFavorites = async (req, res) => {
+  // is it req.user._id or  const userId = req.body.userId?
+  //  const userId = req.body.userId;
+  const userId = req.user._id;
+  const favId = req.params.id;
+
+  const result = await User.findOneAndRemove(
+    { _id: userId },
+    { $pull: { favorites: favId } },
+    { new: true }
+    );
+
+    if(!result) {
+      throw RequestError(404, "Not found");
+      }
+    return res.status(200).json(result);
+};
+
 
 module.exports = {
   getNoticesByCategory,
   getNoticeById,
   addToFavorites,
   getNotifications,
-  //   removeFromFavorites,
+  removeFromFavorites,
 };
