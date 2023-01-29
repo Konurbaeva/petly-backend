@@ -45,13 +45,30 @@ const getNotifications = async (req, res) => {
   return res.status(200).json(result);
 };
 
+// const removeFromFavorites = async (req, res) => {
+//   // is it req.user._id or  const userId = req.body.userId?
+//   //  const userId = req.body.userId;
+//   const userId = req.user._id;
+//   const favId = req.params.id;
+
+//   const result = await User.findOneAndUpdate(
+//     { _id: userId },
+//     { $pull: { favorites: favId } },
+//     { new: true }
+//     );
+
+//     if(!result) {
+//       throw RequestError(404, "Not found");
+//       }
+//     return res.status(200).json(result);
+// };
 const removeFromFavorites = async (req, res) => {
   // is it req.user._id or  const userId = req.body.userId?
   //  const userId = req.body.userId;
   const userId = req.user._id;
   const favId = req.params.id;
 
-  const result = await User.findOneAndUpdate(
+  const result = await User.findOneAndRemove(
     { _id: userId },
     { $pull: { favorites: favId } },
     { new: true }
