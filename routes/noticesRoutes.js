@@ -5,8 +5,8 @@ const {
   getNoticesByCategory,
   getNoticeById,
   addToFavorites,
-  // removeFromFavorites,
-} = require("../../controllers");
+  removeFromFavorites,
+} = require("../controllers/noticesController");
 const { asyncWrapper } = require("../helpers/apiHelpers");
 const { authMiddleware } = require("../middlewares/authMiddleware");
 
@@ -31,5 +31,11 @@ router.post(
 //   authMiddleware,
 //   asyncWrapper(getNoticeById)
 // );
+
+router.delete(
+  "/notices/favorites/:id",
+  authMiddleware,
+  asyncWrapper(removeFromFavorites)
+);
 
 module.exports = router;
