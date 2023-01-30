@@ -1,31 +1,30 @@
-const express = require('express')
-const logger = require('morgan')
-const cors = require('cors')
+const express = require("express");
+const logger = require("morgan");
+const cors = require("cors");
+require("dotenv").config();
 
-require('dotenv').config();
-
-const userRoutes = require('./routes/userRoutes');
+const userRoutes = require("./routes/userRoutes");
 const newsRoutes = require('./routes/newsRoutes');
+const noticesRoutes = require("./routes/noticesRoutes");
+const app = express();
 
-const app = express()
+app.use(logger("short"));
+app.use(cors());
+app.use(express.json());
 
-app.use(logger('short'))
-app.use(cors())
-app.use(express.json())
 app.use(express.static("public"))
-
-
-app.use('/api/users', userRoutes);
+app.use("/api/users", userRoutes);
 app.use('/api/news', newsRoutes);
+app.use("/api/notices", noticesRoutes);
 
-// todo - temporary solution to errors
+
 app.use((req, res) => {
-  res.status(404).json({ message: 'Not found' })
-})
+  res.status(404).json({ message: "Not found" });
+});
 
 app.use((err, req, res, next) => {
-  const { status = 500, message = "Server error " } = err;
-  res.status(500).json({ message: err.message })
-})
+  const { status = 500, message = "Server error" } = err;
+  res.status(status).json({ message });
+});
 
-module.exports = app
+module.exports = app;
