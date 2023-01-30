@@ -72,14 +72,13 @@ const removeFromFavorites = async (req, res) => {
     { _id: userId },
     { $pull: { favorites: favId } },
     { new: true }
-    );
+  );
 
-    if(!result) {
-      throw RequestError(404, "Not found");
-      }
-    return res.status(200).json(result);
+  if (!result) {
+    throw RequestError(404, "Not found");
+  }
+  return res.status(200).json(result);
 };
-
 
 module.exports = {
   getNoticesByCategory,
