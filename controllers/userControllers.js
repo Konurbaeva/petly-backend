@@ -45,8 +45,12 @@ const loginController = async (req, res) => {
 }
 
 const getCurrentController = async (req, res) => {
-    const { email } = req.user
-    return res.status(200).json({email})
+    // const { email } = req.user
+    // return res.status(200).json(req.user)
+    const {_id} = req.user;
+    const user = await User.findById(_id).populate("pets", "owner name");
+    return res.status(200).json(user);
+
 }
 const logoutController = async (req, res) => {
     const {_id} = req.user;

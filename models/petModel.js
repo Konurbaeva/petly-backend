@@ -17,6 +17,10 @@ const petSchema = new mongoose.Schema(
     comments: {
       type: String,
     },
+    owner: {
+        type:  [mongoose.Schema.Types.ObjectId],
+        ref: 'User',
+      }
   },
   { versionKey: false, timestamps: true }
 );
