@@ -21,7 +21,7 @@ const newsSchema = new Schema({
 });
 
 
-const News = model("News", newsSchema);
+const News = model("news", newsSchema);
 
 module.exports = {
     News
