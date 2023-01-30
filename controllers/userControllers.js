@@ -77,7 +77,7 @@ const avatarController = async (req, res) => {
     const result = await cloudinary.uploader.upload(tempUpload, { public_id: filename },
         function (error, result) {
             // console.log(result);
-            return result
+            return error
         });
     const { secure_url: avatarURL } = result;
     await fs.unlink(tempUpload);
