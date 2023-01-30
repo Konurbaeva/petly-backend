@@ -5,6 +5,8 @@ require("dotenv").config();
 
 const userRoutes = require("./routes/userRoutes");
 const noticesRoutes = require("./routes/noticesRoutes");
+const petRoutes = require("./routes/petRoutes");
+
 const app = express();
 
 app.use(logger("short"));
@@ -13,6 +15,8 @@ app.use(express.json());
 
 app.use("/api/users", userRoutes);
 app.use("/api/notices", noticesRoutes);
+app.use("/api/pets", petRoutes);
+
 
 
 app.use((req, res) => {
