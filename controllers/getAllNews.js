@@ -1,8 +1,8 @@
-const News = require("../models/newsModel");
+const { News } = require("../models/newsModel");
 
 
 const getAllNews = async (req, res, next) => {
-    const result = await News.find()
+  const result = await News.find({})
 
   if (!result) {
     throw RequestError(404, "Not found");
