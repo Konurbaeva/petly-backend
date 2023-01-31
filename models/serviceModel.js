@@ -5,44 +5,37 @@ const servicesSchema = new Schema({
     type: String,
     required: true,
   },
-
   url: {
     type: String,
     required: true,
   },
-
   addressUrl: {
     type: String,
     required: true,
   },
-
   imageUrl: {
     type: String,
     required: true,
   },
-
   address: {
     type: String,
     required: true,
   },
-
   workDays: {
     type: Array,
     required: false,
   },
-
   phone: {
     type: String,
     required: true,
   },
-
   email: {
     type: String,
     required: true,
   },
 });
 
-const Service = model("service", servicesSchema);
+const Service = model("Service", servicesSchema);
 
 module.exports = {
   Service,
