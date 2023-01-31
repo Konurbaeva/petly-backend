@@ -80,10 +80,22 @@ const removeFromFavorites = async (req, res) => {
   return res.status(200).json(result);
 };
 
+const updateNotice= async (req, res) => {
+  const { _id } = req.user;
+  const notice = await Notices.find({ _id });
+  
+  const updatedNotice = await User.findByIdAndUpdate(_id, {
+  $push: { notices: notice }
+  });
+
+  return res.status(200).json(updatedNotice);
+  };
+
 module.exports = {
   getNoticesByCategory,
   getNoticeById,
   addToFavorites,
   getNotifications,
   removeFromFavorites,
+  updateNotice
 };
