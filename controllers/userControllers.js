@@ -13,7 +13,6 @@ const Jimp = require('jimp');
 //   secure: true
 // });
 
-
 const RequestError = require('../helpers/RequestError');
 const { User } = require('../models/userModel');
 
@@ -24,7 +23,7 @@ const registerController = async (req, res) => {
     }
     const user = new User(req.body);
     await user.save();
-    return res.status(201).json(req.body);
+    return res.status(201).json(user);
 }
 
 const loginController = async (req, res) => {
@@ -45,12 +44,9 @@ const loginController = async (req, res) => {
 }
 
 const getCurrentController = async (req, res) => {
-    // const { email } = req.user
-    // return res.status(200).json(req.user)
     const {_id} = req.user;
-    const user = await User.findById(_id).populate("pets", "owner name");
+    const user = await User.findById(_id).populate("pets", "_id name birthday breed photo comments");
     return res.status(200).json(user);
-
 }
 const logoutController = async (req, res) => {
     const {_id} = req.user;

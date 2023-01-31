@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
 
-const { createPetController, getPetController } = require('../controllers/petControllers');
+const { createPetController, removePetController } = require('../controllers/petControllers');
 
 const { authMiddleware } = require('../middlewares/authMiddleware');
 const { asyncWrapper } = require('../helpers/apiHelpers');
@@ -11,11 +11,7 @@ const { upload } = require('../middlewares/upload')
 
 
 // router.post('/login', validateBody(schemas.loginSchema), asyncWrapper(loginController));
-
-// router.patch('/avatar', authMiddleware, upload.single('avatar'), asyncWrapper(avatarController))
-
-router.post('/', authMiddleware, upload.single('photo'),  asyncWrapper(createPetController))
-router.get('/', authMiddleware,  asyncWrapper(getPetController))
-
+router.post('/', authMiddleware, upload.single('photo'), asyncWrapper(createPetController))
+router.delete('/:petId', authMiddleware, asyncWrapper(removePetController));
 
 module.exports = router

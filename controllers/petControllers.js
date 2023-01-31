@@ -4,6 +4,7 @@ const fs = require('fs/promises');
 const Jimp = require('jimp');
 // const RequestError = require('../helpers/RequestError');
 const { Pet } = require('../models/petModel');
+const { User } = require('../models/userModel')
 
 const createPetController = async (req, res) => {
     // console.log(req.file);
@@ -24,16 +25,33 @@ const createPetController = async (req, res) => {
         });
     const { secure_url: petImgURL } = result;
     await fs.unlink(tempUpload);
+
+
     const pet = new Pet({name, birthday, breed, comments, photo: petImgURL, owner: userID});
     await pet.save();
+
+    await User.findByIdAndUpdate(userID, {$push: {pets: pet} })
     return res.status(201).json(pet);
 }
 
-const getPetController = async(req, res) => {
-    const pets = await Pet.find().populate("owner", "_id email");
-    return res.status(201).json(pets);
-}
-module.exports = {
-    createPetController, getPetController
 
+const removePetController = async (req, res) => {
+    console.log(req.user);
+    const { _id: userId } = req.user
+    const { petId } = req.params
+
+//     const deletedPet = await Pet.findOneAndDelete({_id: petId, owner: userId});
+//     if (!deletedPet) {
+//         // throw new NotFoundError("Not found");
+//         return 404
+//    }
+//    const user = await User.findByIdAndUpdate(userId, {$pull: {pets: [{_id: petId}]} })
+   const user = await User.findByIdAndUpdate(userId, {$pull: {pets: petId } })
+
+    // return res.status(200).json({ message: "Pet deleted" });
+    return res.status(200).json(user) 
+}
+
+module.exports = {
+    createPetController, removePetController
 }
