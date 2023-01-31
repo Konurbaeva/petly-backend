@@ -4,7 +4,7 @@ const cors = require("cors");
 require("dotenv").config();
 
 const userRoutes = require("./routes/userRoutes");
-const newsRoutes = require("./routes/newsRoutes");
+const newsRoutes = require('./routes/newsRoutes');
 const noticesRoutes = require("./routes/noticesRoutes");
 const servicesRoutes = require("./routes/servicesRoutes");
 const app = express();
@@ -13,11 +13,10 @@ app.use(logger("short"));
 app.use(cors());
 app.use(express.json());
 
-app.use(logger('short'))
-app.use(cors())
-app.use(express.json())
 app.use(express.static("public"))
-
+app.use("/api/users", userRoutes);
+app.use('/api/news', newsRoutes);
+app.use("/api/notices", noticesRoutes);
 
 app.use('/api/users', userRoutes);
 app.use('/api/news', newsRoutes);
