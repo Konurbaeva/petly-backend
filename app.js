@@ -4,7 +4,7 @@ const cors = require("cors");
 require("dotenv").config();
 
 const userRoutes = require("./routes/userRoutes");
-const newsRoutes = require('./routes/newsRoutes');
+const newsRoutes = require("./routes/newsRoutes");
 const noticesRoutes = require("./routes/noticesRoutes");
 const servicesRoutes = require("./routes/servicesRoutes");
 const app = express();
@@ -13,14 +13,14 @@ app.use(logger("short"));
 app.use(cors());
 app.use(express.json());
 
-app.use(express.static("public"))
+app.use(express.static("public"));
 app.use("/api/users", userRoutes);
-app.use('/api/news', newsRoutes);
+app.use("/api/news", newsRoutes);
 app.use("/api/notices", noticesRoutes);
 
-app.use('/api/users', userRoutes);
-app.use('/api/news', newsRoutes);
-app.use('/api/services', servicesRoutes);
+app.use("/api/users", userRoutes);
+app.use("/api/news", newsRoutes);
+app.use("/api/services", servicesRoutes);
 
 // todo - temporary solution to errors
 app.use((req, res) => {
@@ -28,8 +28,8 @@ app.use((req, res) => {
 });
 
 app.use((err, req, res, next) => {
-  const { status = 500, message = "Server error " } = err;
-  res.status(500).json({ message: err.message })
-})
+  // const { status = 500, message = "Server error " } = err;
+  res.status(500).json({ message: err.message });
+});
 
 module.exports = app;
