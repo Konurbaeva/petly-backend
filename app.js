@@ -6,6 +6,7 @@ require("dotenv").config();
 const userRoutes = require("./routes/userRoutes");
 const newsRoutes = require("./routes/newsRoutes");
 const noticesRoutes = require("./routes/noticesRoutes");
+const servicesRoutes = require("./routes/servicesRoutes");
 const app = express();
 
 app.use(logger("short"));
@@ -20,6 +21,7 @@ app.use(express.static("public"))
 
 app.use('/api/users', userRoutes);
 app.use('/api/news', newsRoutes);
+app.use('/api/services', servicesRoutes);
 
 // todo - temporary solution to errors
 app.use((req, res) => {
