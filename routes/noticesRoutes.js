@@ -1,7 +1,7 @@
 const express = require("express");
 const router = express.Router();
 const {
-  addUserNotice,
+  addNotice,
   getNotifications,
   getNoticesByCategory,
   getNoticeById,
@@ -12,18 +12,18 @@ const {
 const { asyncWrapper } = require("../helpers/apiHelpers");
 const { authMiddleware } = require("../middlewares/authMiddleware");
 
+router.post(
+  "/notices",
+  authMiddleware,
+  asyncWrapper(addNotice)
+);
+
 router.get("/notices", authMiddleware, asyncWrapper(getNotifications));
 
 router.get(
   "/notices/:categoryName",
   authMiddleware,
   asyncWrapper(getNoticesByCategory)
-);
-
-router.post(
-  "/notices",
-  authMiddleware,
-  asyncWrapper(addUserNotice)
 );
 
 router.get("/notices/:id", authMiddleware, asyncWrapper(getNoticeById));

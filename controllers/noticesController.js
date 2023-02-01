@@ -91,7 +91,7 @@ const updateNotice= async (req, res) => {
   return res.status(200).json(updatedNotice);
   };
 
-  const addUserNotice = async (req, res) => {
+  const addNotice = async (req, res) => {
     const { _id } = req.user;
 
     const currentDate = new Date(); 
@@ -107,7 +107,7 @@ const updateNotice= async (req, res) => {
   };
 
 module.exports = {
-  addUserNotice,
+  addNotice,
   getNoticesByCategory,
   getNoticeById,
   addToFavorites,
