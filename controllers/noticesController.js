@@ -22,6 +22,16 @@ const getMyNotice = async (req, res) => {
   return res.status(200).json(result);
 };
 
+const getSearchQuery = async (req, res) => {
+  const { searchQuery } = req.query;
+
+  const result = await Notices.find({title: searchQuery });
+
+  if (!result) {
+    throw RequestError(404, "Not found");
+  }
+  return res.status(200).json(result);
+};
 
 const getNoticesByCategory = async (req, res) => {
   const { categoryName } = req.params;
@@ -121,5 +131,6 @@ module.exports = {
   getNotifications,
   removeFromFavorites,
   updateNotice,
-  getMyNotice
+  getMyNotice,
+  getSearchQuery
 };
