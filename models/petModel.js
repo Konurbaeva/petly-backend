@@ -4,7 +4,7 @@ const petSchema = new mongoose.Schema(
   {
     name: {
       type: String,
-      default: null
+      required: [true, "Name is required"],
     },
     birthday: {
       type: String,

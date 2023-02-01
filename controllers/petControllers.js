@@ -1,10 +1,11 @@
-require('dotenv').config();
 const cloudinary = require('cloudinary').v2;
 const fs = require('fs/promises');
 const Jimp = require('jimp');
-// const RequestError = require('../helpers/RequestError');
+require('dotenv').config();
+
 const { Pet } = require('../models/petModel');
-const { User } = require('../models/userModel')
+const { User } = require('../models/userModel');
+const RequestError = require('../helpers/RequestError');
 
 const createPetController = async (req, res) => {
     // console.log(req.file);
@@ -36,20 +37,16 @@ const createPetController = async (req, res) => {
 
 
 const removePetController = async (req, res) => {
-    console.log(req.user);
+    // console.log(req.user);
     const { _id: userId } = req.user
     const { petId } = req.params
 
-//     const deletedPet = await Pet.findOneAndDelete({_id: petId, owner: userId});
-//     if (!deletedPet) {
-//         // throw new NotFoundError("Not found");
-//         return 404
-//    }
-//    const user = await User.findByIdAndUpdate(userId, {$pull: {pets: [{_id: petId}]} })
-   const user = await User.findByIdAndUpdate(userId, {$pull: {pets: petId } })
-
-    // return res.status(200).json({ message: "Pet deleted" });
-    return res.status(200).json(user) 
+    const deletedPet = await Pet.findOneAndDelete({_id: petId, owner: userId});
+    if (!deletedPet) {
+        throw RequestError(404, "Pet not found");
+    }
+    await User.findByIdAndUpdate(userId, { $pull: { pets: petId } });
+    return res.status(200).json({ message: "Pet deleted" });
 }
 
 module.exports = {
