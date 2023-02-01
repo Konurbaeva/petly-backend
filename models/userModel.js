@@ -40,7 +40,8 @@ const userSchema = new mongoose.Schema(
       type: String,
       default: null,
     },
-    pets: [{type: mongoose.Schema.Types.ObjectId, ref: 'Pet'}]
+    pets: [{type: mongoose.Schema.Types.ObjectId, ref: 'Pet'}],
+    favorites: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Notices' }]
   },
   { versionKey: false, timestamps: true }
 );
