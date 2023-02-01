@@ -11,6 +11,18 @@ const getNoticeById = async (req, res) => {
   return res.status(200).json(result);
 };
 
+const getMyNotice = async (req, res) => {
+  const { _id } = req.user;
+
+  const myNotices = await Notices.find({ owner: _id });
+
+  if (!myNotices) {
+    throw RequestError(404, "Not found");
+  }
+  return res.status(200).json(result);
+};
+
+
 const getNoticesByCategory = async (req, res) => {
   const { categoryName } = req.params;
   const result = await Notices.find({ categoryName });
@@ -108,5 +120,6 @@ module.exports = {
   addToFavorites,
   getNotifications,
   removeFromFavorites,
-  updateNotice
+  updateNotice,
+  getMyNotice
 };

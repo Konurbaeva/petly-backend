@@ -7,7 +7,8 @@ const {
   getNoticeById,
   addToFavorites,
   removeFromFavorites,
-  updateNotice
+  updateNotice,
+  getMyNotice
 } = require("../controllers/noticesController");
 const { asyncWrapper } = require("../helpers/apiHelpers");
 const { authMiddleware } = require("../middlewares/authMiddleware");
@@ -27,6 +28,8 @@ router.get(
 );
 
 router.get("/notices/:id", authMiddleware, asyncWrapper(getNoticeById));
+
+router.get("/notices/myNotice", authMiddleware, asyncWrapper(getMyNotice));
 
 router.post(
   "/notices/favorites/:id",
