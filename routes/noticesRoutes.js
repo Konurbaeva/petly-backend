@@ -56,8 +56,8 @@ router.delete(
   asyncWrapper(removeFromFavorites)
 );
 
-router.post(
-  "/search",
+router.get(
+  "/search?q=keyword",
   asyncWrapper(getSearchQuery)
 );
 
