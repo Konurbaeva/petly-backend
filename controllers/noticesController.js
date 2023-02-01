@@ -91,7 +91,19 @@ const updateNotice= async (req, res) => {
   return res.status(200).json(updatedNotice);
   };
 
+  const addNotice = async (req, res) => {
+    const { _id } = req.user;
+
+    const result = await Notices.create({
+      ...req.body,
+      owner: _id,
+    });
+
+    return res.status(201).json(result);
+  };
+
 module.exports = {
+  addNotice,
   getNoticesByCategory,
   getNoticeById,
   addToFavorites,

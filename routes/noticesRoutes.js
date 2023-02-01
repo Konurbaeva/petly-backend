@@ -1,6 +1,7 @@
 const express = require("express");
 const router = express.Router();
 const {
+  addNotice,
   getNotifications,
   getNoticesByCategory,
   getNoticeById,
@@ -10,6 +11,12 @@ const {
 } = require("../controllers/noticesController");
 const { asyncWrapper } = require("../helpers/apiHelpers");
 const { authMiddleware } = require("../middlewares/authMiddleware");
+
+router.post(
+  "/notices",
+  authMiddleware,
+  asyncWrapper(addNotice)
+);
 
 router.get("/notices", authMiddleware, asyncWrapper(getNotifications));
 
