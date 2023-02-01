@@ -8,7 +8,8 @@ const {
   addToFavorites,
   removeFromFavorites,
   updateNotice,
-  getMyNotice
+  getMyNotice,
+  getSearchQuery
 } = require("../controllers/noticesController");
 const { asyncWrapper } = require("../helpers/apiHelpers");
 const { authMiddleware } = require("../middlewares/authMiddleware");
@@ -52,6 +53,11 @@ router.put(
 router.delete(
   "/notices/favorites/:id",
   authMiddleware,
+  asyncWrapper(removeFromFavorites)
+);
+
+router.post(
+  "/search",
   asyncWrapper(removeFromFavorites)
 );
 
