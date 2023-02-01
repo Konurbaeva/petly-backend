@@ -58,7 +58,7 @@ router.delete(
 
 router.post(
   "/search",
-  asyncWrapper(removeFromFavorites)
+  asyncWrapper(getSearchQuery)
 );
 
 module.exports = router;
