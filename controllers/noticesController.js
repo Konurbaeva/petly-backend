@@ -94,12 +94,8 @@ const updateNotice= async (req, res) => {
   const addNotice = async (req, res) => {
     const { _id } = req.user;
 
-    const currentDate = new Date(); 
-    const datetime = currentDate.getDate()
-
     const result = await Notices.create({
       ...req.body,
-      createdAt: datetime,
       owner: _id,
     });
 
