@@ -98,7 +98,7 @@ const updateNotice= async (req, res) => {
       ...req.body,
       owner: _id,
     });
-
+    
     return res.status(201).json(result);
   };
 
