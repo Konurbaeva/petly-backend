@@ -40,6 +40,7 @@ const userSchema = new mongoose.Schema(
       type: String,
       default: null,
     },
+    pets: [{type: mongoose.Schema.Types.ObjectId, ref: 'Pet'}]
   },
   { versionKey: false, timestamps: true }
 );
