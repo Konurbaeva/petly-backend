@@ -21,14 +21,14 @@ app.use("/api/users", userRoutes);
 app.use("/api/news", newsRoutes);
 app.use("/api/services", servicesRoutes);
 
-// todo - temporary solution to errors
 app.use((req, res) => {
   res.status(404).json({ message: "Not found" });
 });
 
 app.use((err, req, res, next) => {
-  // const { status = 500, message = "Server error " } = err;
-  res.status(500).json({ message: err.message });
+  // don't remove or change !!!!
+  const { status = 500, message = "Server error" } = err;
+  res.status(status).json({ message });
 });
 
 module.exports = app;
