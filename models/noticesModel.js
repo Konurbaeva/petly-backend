@@ -41,6 +41,7 @@ const noticesShema = new Schema({
     enum: ["sell", "lost-found", "for-free"],
     default: "sell",
   },
+  owner: [{type: Schema.Types.ObjectId, ref: 'User'}],
 });
 
 const Notices = model("notices", noticesShema);
