@@ -36,13 +36,15 @@ const getMyNotice = async (req, res) => {
 const deleteMyNotice = async (req, res) => {
   const { _id: userId } = req.user
   const { noticeId } = req.params
-  
+
   const deletedNotice = await Notices.findOneAndDelete({ owner: userId});
 
   if (!deletedNotice) {
     throw RequestError(404, "Notice not found");
 }
-await User.findByIdAndUpdate(userId, { $pull: { notices:  noticeId } });
+
+await User.findByIdAndUpdate(userId, { $pull: { notices:  noticeId } }, { new: true });
+
 return res.status(200).json();
 };
 
