@@ -9,11 +9,13 @@ const {
   removeFromFavorites,
   updateNotice,
   getMyNotice,
+  deleteMyNotice,
   getSearchQuery
 } = require("../controllers/noticesController");
 const { asyncWrapper } = require("../helpers/apiHelpers");
 const { authMiddleware } = require("../middlewares/authMiddleware");
 
+// create an endpoint to add ads according to the selected category
 router.post(
   "/notices",
   authMiddleware,
@@ -22,16 +24,26 @@ router.post(
 
 router.get("/notices", authMiddleware, asyncWrapper(getNotifications));
 
+// create an endpoint for receiving ads by category
 router.get(
   "/notices/:categoryName",
-  authMiddleware,
   asyncWrapper(getNoticesByCategory)
 );
 
-router.get("/notices/:id", authMiddleware, asyncWrapper(getNoticeById));
+//create an endpoint to receive a single ad
+router.get("/notices/:id", asyncWrapper(getNoticeById));
 
+//create an endpoint to receive ads of an authorized user created by the same user
 router.get("/notices/myNotice", authMiddleware, asyncWrapper(getMyNotice));
+// create an endpoint to delete an authorized user's ad created by the same user
+router.delete("/notices/myNotice", authMiddleware, asyncWrapper(deleteMyNotice));
 
+//create an endpoint to add an ad to favorites
+router.post(
+  "/notices/favorites/:id",
+  asyncWrapper(addToFavorites)
+);
+//create an endpoint to receive ads of an authorized user added by him to his favorites
 router.post(
   "/notices/favorites/:id",
   authMiddleware,
@@ -50,6 +62,7 @@ router.put(
 //   asyncWrapper(getNoticeById)
 // );
 
+// create an endpoint to delete the ad of the authorized user added by the same to the favorites
 router.delete(
   "/notices/favorites/:id",
   authMiddleware,
