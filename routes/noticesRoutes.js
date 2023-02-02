@@ -20,25 +20,18 @@ router.post(
   asyncWrapper(addNotice)
 );
 
-// no need of this route getNotifications
-// router.get("/notices", authMiddleware, asyncWrapper(getNotifications));
-
 // create an endpoint for receiving ads by category
-// correct, no need for authMiddleware
 router.get(
   "/notices/:categoryName",
   asyncWrapper(getNoticesByCategory)
 );
 
 //create an endpoint to receive a single ad
-// no need for authMiddleware
 router.get("/notices/:id", asyncWrapper(getNoticeById));
 
 //create an endpoint to receive ads of an authorized user created by the same user
-//no need for authMiddleware
 router.get("/notices/myNotice", authMiddleware, asyncWrapper(getMyNotice));
 // create an endpoint to delete an authorized user's ad created by the same user
-//no need for authMiddleware
 router.delete("/notices/myNotice", authMiddleware, asyncWrapper(deleteMyNotice));
 
 
@@ -63,7 +56,7 @@ router.delete(
 );
 
 router.get(
-  "/search?q=keyword",
+  "/search",
   asyncWrapper(getSearchQuery)
 );
 
