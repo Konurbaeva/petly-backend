@@ -48,8 +48,9 @@ const deleteMyNotice = async (req, res) => {
     { $pull: { notices: noticeId } },
     { new: true }
   );
+  await Notices.createIndex({ title: "text" });
 
-  return res.status(200).json();
+  return res.status(200).json({ message: "Success" });
 };
 
 const getSearchQuery = async (req, res) => {
