@@ -23,9 +23,9 @@ const getNoticeById = async (req, res) => {
 // };
 
 const getMyNotice = async (req, res) => {
-  const { token } = req.user;
+  const { _id } = req.user;
 
-  const myNotices = await Notices.find({ owner: token });
+  const myNotices = await Notices.find({ owner: _id });
 
   if (!myNotices) {
     throw RequestError(404, "Not found");
