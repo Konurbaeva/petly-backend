@@ -1,6 +1,6 @@
 const app = require("./app");
 const connectMongo = require("./db/connection");
-const PORT = 8080;
+const PORT = 3000;
 
 const start = async () => {
   try {
