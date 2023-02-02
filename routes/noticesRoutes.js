@@ -2,12 +2,10 @@ const express = require("express");
 const router = express.Router();
 const {
   addNotice,
-  getNotifications,
   getNoticesByCategory,
   getNoticeById,
   addToFavorites,
   removeFromFavorites,
-  updateNotice,
   getMyNotice,
   deleteMyNotice,
   getSearchQuery
@@ -21,8 +19,6 @@ router.post(
   authMiddleware,
   asyncWrapper(addNotice)
 );
-
-router.get("/notices", authMiddleware, asyncWrapper(getNotifications));
 
 // create an endpoint for receiving ads by category
 router.get(
@@ -38,22 +34,12 @@ router.get("/notices/myNotice", authMiddleware, asyncWrapper(getMyNotice));
 // create an endpoint to delete an authorized user's ad created by the same user
 router.delete("/notices/myNotice", authMiddleware, asyncWrapper(deleteMyNotice));
 
-//create an endpoint to add an ad to favorites
-router.post(
-  "/notices/favorites/:id",
-  asyncWrapper(addToFavorites)
-);
+
 //create an endpoint to receive ads of an authorized user added by him to his favorites
 router.post(
   "/notices/favorites/:id",
   authMiddleware,
   asyncWrapper(addToFavorites)
-);
-
-router.put(
-  "/notices/favorites/:id",
-  authMiddleware,
-  asyncWrapper(updateNotice)
 );
 
 // router.delete(
@@ -70,7 +56,7 @@ router.delete(
 );
 
 router.get(
-  "/search?q=keyword",
+  "/search",
   asyncWrapper(getSearchQuery)
 );
 
