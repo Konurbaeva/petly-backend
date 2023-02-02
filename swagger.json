@@ -13,36 +13,33 @@
   "produces": ["application/json", "multipart/form-data"],
   "servers": [{ "url": "http://localhost:3002" }],
   "tags": [
-    {
-      "name": "Auth",
-      "description": "Authorization endpoints"
+     {
+      "name": "User",
+      "description": "User endpoints"
     },
-
+    {
+      "name": "News",
+      "description": "News endpoint"
+    },
 
      {
       "name": "Services-sidebar",
       "description": "Information about partners"
     },
-     {
-      "name": "News",
-      "description": "News endpoint"
-    },
+    
      {
       "name": "Notices",
       "description": "Notices endpoints"
-    },
-      {
-      "name": "User",
-      "description": "User endpoints"
     }
+     
   ],
 
   
   "paths": {
-    "/auth/register": {
+    "/api/users/register": {
       "post": {
-        "tags": ["Auth"],
-        "summary": "User registration",
+        "tags": ["User"],
+        "summary": "Create a new user",
         "parameters": [],
         "security": [{ "Bearer": [] }],
         "requestBody": {
@@ -58,7 +55,7 @@
         },
         "responses": {
           "201": {
-            "description": "Successful operation",
+            "description": "Registration Successful",
             "content": {
               "application/json": {
                 "schema": {
@@ -72,13 +69,415 @@
             "content": {}
           },
           "409": {
-            "description": "Provided email already exists",
+            "description": "Email already exists",
+            "content": {}
+          },
+           "500": {
+            "description": "Server error",
             "content": {}
           }
         }
+       
       }
+      
+      
+      
+    },
+    "/api/users/login": {
+      "post": {
+        "tags": ["User"],
+        "summary": "Login user",
+        "parameters": [],
+        "security": [{ "Bearer": [] }],
+        "requestBody": {
+          "description": "Login's object",
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/LoginRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "User is logged in",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/LoginResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Login error",
+            "content": {}
+          },
+          "500": {
+            "description": "Server error",
+            "content": {}
+          }
+        }
+       
+      }
+      
+      
+    },
+    "/api/users/update": {
+      "patch": {
+        "tags": ["User"],
+        "summary": "Update an existing user",
+        "parameters": [],
+        "security": [{ "Bearer": [] }],
+        "requestBody": {
+          "description": "User's object",
+          "required": true,
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "The user was successfully updated",
+            "content": {
+              "multipart/form-data": {
+                "schema": {
+                  "$ref": "#/components/schemas/UpdateResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "User update failed",
+            "content": {}
+          },
+          "401": {
+            "description": "Missing header with authorization token",
+            "content": {}
+          },
+           "500": {
+            "description": "Server error",
+            "content": {}
+          }
+        }
+       
+      }
+      
+      
+    },
+    "/api/users/logout": {
+      "get": {
+        "tags": ["User"],
+        "summary": "Log out user",
+        "parameters": [],
+        "security": [{ "Bearer": [] }],
+        "requestBody": {
+          "description": "User's object",
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/LogoutRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "The user is logged out",
+            "content": {}
+          },
+          "401": {
+            "description": "Missing header with authorization token.",
+            "content": {}
+          },
+          "500": {
+            "description": "Server error",
+            "content": {}
+          }
+        }
+       
+      }
+      
+      
+      
+    },
+    "/api/news": {
+      "get": {
+        "tags": ["News"],
+        "summary": "Get all news",
+        "parameters": [],
+        
+        "requestBody": {},
+        "responses": {
+          "200": {
+            "description": "Ok, Successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/NewsResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request",
+            "content": {}
+          },
+          "500": {
+            "description": "Server error",
+            "content": {}
+          }
+        }
+       
+      }
+      
+      
+      
+    },
+    "/api/serveces": {
+      "get": {
+        "tags": ["Services-sidebar"],
+        "summary": "Get all partners",
+        "parameters": [],
+        "security": [{ "Bearer": [] }],
+        "requestBody": {},
+        "responses": {
+          "200": {
+            "description": "Ok, Successful operation",
+            "content": {
+              "multipart/form-data": {
+                "schema": {
+                  "$ref": "#/components/schemas/ServecesResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request",
+            "content": {}
+          },
+          "500": {
+            "description": "Server error",
+            "content": {}
+          }
+        }
+       
+      }
+      
+      
+      
+    },
+    "api/users/current": {
+      "get": {
+        "tags": ["User"],
+        "summary": "Get information about the current user",
+        "parameters": [],
+        "security": [{ "Bearer": [] }],
+        "requestBody": {
+          "description": "User's object",
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CurrentRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Information found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CurrentResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Missing header with authorization token",
+            "content": {}
+          }
+        
+        }
+       
+      }
+      
+      
+      
+    },
+    "/api/users/avatar": {
+      "patch": {
+        "tags": ["User"],
+        "summary": "update avatar",
+        "parameters": [],
+        "security": [{ "Bearer": [] }],
+        "requestBody": {
+          "description": "files",
+          "required": true,
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "$ref": "#/components/schemas/AvatarRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "The avatar was successfully updated",
+            "content": {
+              "multipart/form-data": {
+                "schema": {
+                  "$ref": "#/components/schemas/AvatarResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Avatar update failed",
+            "content": {}
+          },
+          "401": {
+            "description": "Missing header with authorization token",
+            "content": {}
+          }
+        }
+       
+      }
+      
+      
+      
+    },
+        "/api/notices/{categoryName}": {
+      "get": {
+        "tags": ["Notices"],
+        "summary": "Notices get All by category",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "categoryName",
+            "required": true,
+            "type": "string",
+            "description": "Name of category"
+          }
+         
+        ],
+        "security": [{ "Bearer": [] }],
+        "requestBody": {
+          "description": "object",
+          "required": true,
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "$ref": "#/components/schemas/NoticesRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful operation, notices found",
+            "content": {
+              "multipart/form-data": {
+                "schema": {
+                  "$ref": "#/components/schemas/NoticesResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request",
+            "content": {}
+          },
+
+          "404": {
+            "description": "There is no such category.",
+            "content": {}
+          },
+           "500": {
+            "description": "Server error",
+            "content": {}
+          }
+        }
+       
+      }
+      
+      
+      
+    },
+     "/api/notices/favorites/{id}": {
+      "get": {
+        "tags": ["Notices"],
+        "summary": "Notices by favorites",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "type": "string",
+            "description": "Added to favorites"
+          }
+         
+        ],
+        "security": [{ "Bearer": [] }],
+        "requestBody": {
+          "description": "Favorite notices",
+          "required": true,
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "$ref": "#/components/schemas/FavoritesRequest"
+              }
+            }
+          }
+        },
+         "responses": {
+          "200": {
+            "description": "Successful operation, notices found",
+            "content": {
+              "multipart/form-data": {
+                "schema": {
+                  "$ref": "#/components/schemas/FavoritesResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request",
+            "content": {}
+          },
+
+          "404": {
+            "description": "Nothing found",
+            "content": {}
+          },
+           "500": {
+            "description": "Server error",
+            "content": {}
+          }
+        }
+       
+      }
+      
+      
+      
     }
+    
+
+    
   },
+
+
+  
   "components": {
     "schemas": {
       "RegistrationRequest": {
@@ -94,7 +493,13 @@
             "type": "string",
             "description": "User's password",
             "example": "qwerty123"
+          },
+          "name": {
+            "type": "string",
+            "description": "User's name",
+            "example": "Natalia"
           }
+          
         }
       },
       "RegistrationResponse": {
@@ -102,23 +507,178 @@
         "items": {
           "type": "object",
           "properties": {
+
+             "name": {
+              "type": "string",
+              "description": "User's name",
+              "example": "Natalia"
+            },
             "email": {
               "type": "string",
               "description": "User's email",
               "format": "email"
             },
             "userId": {
-              "type": "number",
+              "type": "string",
               "description": "User's id",
               "example": "32143232436545474"
             }
           }
         },
         "example": [
-          { "email": "1@gmail.com", "userId": "1" },
-          { "email": "2@gmail.com", "userId": "2" }
+          { "name": "Natalia", "email": "1@gmail.com", "userId": "1" },
+          { "name": "Andriy", "email": "2@gmail.com", "userId": "2" }
         ]
-      }
+      },
+
+"LoginRequest": {
+        "type": "object",
+        "required": ["email", "password"],
+        "properties": {
+          "email": {
+            "type": "string",
+            "description": "User's email",
+            "format": "email"
+          },
+          "password": {
+            "type": "string",
+            "description": "User's password",
+            "example": "qwerty123"
+          }
+        }
+      },
+      "LoginResponse": {
+        "type": "object",
+       
+          "properties": {
+
+              "email": {
+              "type": "string",
+              "description": "User's email",
+              "format": "email"
+            },
+             "token": {
+              "type": "string",
+              "description": "Token",
+              "example": "ghfg5678ihjk.dftgy6789ohjik.4567fgyhjknjvc"
+            }
+          
+        },
+        "example": 
+          {"email": "1@gmail.com",  "token": "ghfg5678ihjk.dftgy6789ohjik.4567fgyhjknjvc"}
+      },
+
+      "LogoutRequest": {
+        "type": "object",
+        "required": ["userId", "token"],
+        "properties": {
+          "userId": {
+              "type": "string",
+              "description": "User's id",
+              "example": "32143232436545474"
+            },
+          "token": {
+            "type": "string",
+            "description": "User's token",
+            "example": "1234erstxcyhj.234fdftgvbnmk.4tfyughbuninm"
+          }
+        }
+      },
+
+          "UpdateRequest": {
+        "type": "object",
+        
+        "properties": {
+          "userId": {
+              "type": "string",
+              "description": "User's id",
+              "example": "32143232436545474"
+            },
+          "email": {
+            "type": "string",
+            "description": "User's email",
+            "format": "email"
+          },
+          "password": {
+            "type": "string",
+            "description": "User's password",
+            "example": "qwerty123"
+          },
+          "name": {
+            "type": "string",
+            "description": "User's name",
+            "example": "Natalia"
+          },
+          "address": {
+            "type": "string",
+            "description": "User's adress",
+            "example": "Kyiv, Konovaltsa street"
+          },
+           "phone": {
+            "type": "string",
+            "description": "User's phone",
+            "example": "+380990976783"
+          },
+          "birthday": {
+              "type": "date",
+              "description": "Date of Birth",
+              "format": "binary",
+              "example": "15.08.2000"
+            },
+            "avatarURL": {
+              "type": "string",
+              "description": "Avatar",
+              "format": "binary"
+            }
+          
+        }
+      },
+      "UpdateResponse": {
+        
+          "type": "object",
+          "properties": {
+          "userId": {
+              "type": "string",
+              "description": "User's id",
+              "example": "32143232436545474"
+            },
+          "email": {
+            "type": "string",
+            "description": "User's email",
+            "format": "email"
+          },
+         
+          "name": {
+            "type": "string",
+            "description": "User's name",
+            "example": "Natalia"
+          },
+          "address": {
+            "type": "string",
+            "description": "User's adress",
+            "example": "Kyiv, Konovaltsa street"
+          },
+           "phone": {
+            "type": "string",
+            "description": "User's phone",
+            "example": "+380990976783"
+          },
+          "birthday": {
+              "type": "date",
+              "description": "Date of Birth",
+              "format": "binary",
+              "example": "15.08.2000"
+            },
+            "avatarURL": {
+              "type": "string",
+              "description": "Avatar",
+              "format": "binary"
+            }
+      
+          
+          }
+        }
+
     },
     "securitySchemes": {
       "Bearer": {
