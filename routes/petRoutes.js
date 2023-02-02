@@ -5,13 +5,11 @@ const { createPetController, removePetController } = require('../controllers/pet
 
 const { authMiddleware } = require('../middlewares/authMiddleware');
 const { asyncWrapper } = require('../helpers/apiHelpers');
-// const validateBody = require('../middlewares/validateBody');
+const validateBody = require('../middlewares/validateBody');
 const { upload } = require('../middlewares/upload')
-// const {schemas} = require('../models/userModel')
+const {schemas} = require('../models/petModel')
 
-
-// router.post('/login', validateBody(schemas.loginSchema), asyncWrapper(loginController));
-router.post('/', authMiddleware, upload.single('photo'), asyncWrapper(createPetController))
+router.post('/', authMiddleware, upload.single('photo'), validateBody(schemas.petValidateSchema), asyncWrapper(createPetController))
 router.delete('/:petId', authMiddleware, asyncWrapper(removePetController));
 
 module.exports = router
