@@ -26,7 +26,7 @@ router.get("/notices/:id", asyncWrapper(getNoticeById));
 router.get("/notices/myNotice", authMiddleware, asyncWrapper(getMyNotice));
 //  create an endpoint to delete an authorized user's ad created by the same user
 router.delete(
-  "/notices/myNotice",
+  "/:id",
   authMiddleware,
   asyncWrapper(deleteMyNotice)
 );

@@ -33,7 +33,19 @@ const getMyNotice = async (req, res) => {
   return res.status(200).json(myNotices);
 };
 
-const deleteMyNotice = async (req, res) => {};
+const deleteMyNotice = async (req, res) => {
+  const { _id: userId } = req.user
+  const { noticeId } = req.params
+  
+  const deletedNotice = await Notices.findOneAndDelete({ owner: userId});
+
+  if (!deletedNotice) {
+    throw RequestError(404, "Notice not found");
+}
+await User.findByIdAndUpdate(userId, { $pull: { notices:  noticeId } });
+return res.status(200).json();
+};
+
 
 const getSearchQuery = async (req, res) => {
   const { query } = req.query;
