@@ -75,15 +75,6 @@ const addToFavorites = async (req, res) => {
   return res.status(201).json(result);
 };
 
-const getNotifications = async (req, res) => {
-  const { _id } = req.user;
-  const result = await Notices.findOne({ _id }).populate("notifications");
-  if (!result) {
-    throw RequestError(404, "Not found");
-  }
-  return res.status(200).json(result);
-};
-
 // const removeFromFavorites = async (req, res) => {
 //   // is it req.user._id or  const userId = req.body.userId?
 //   //  const userId = req.body.userId;
@@ -119,16 +110,7 @@ const removeFromFavorites = async (req, res) => {
   return res.status(200).json(result);
 };
 
-const updateNotice= async (req, res) => {
-  const { _id } = req.user;
-  const notice = await Notices.find({ _id });
-  
-  const updatedNotice = await User.findByIdAndUpdate(_id, {
-  $push: { notices: notice }
-  });
 
-  return res.status(200).json(updatedNotice);
-  };
 
   const addNotice = async (req, res) => {
     const { _id } = req.user;
@@ -145,9 +127,7 @@ module.exports = {
   getNoticesByCategory,
   getNoticeById,
   addToFavorites,
-  getNotifications,
   removeFromFavorites,
-  updateNotice,
   getMyNotice,
   deleteMyNotice,
   getSearchQuery

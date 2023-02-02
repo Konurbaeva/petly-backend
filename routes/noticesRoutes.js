@@ -2,12 +2,10 @@ const express = require("express");
 const router = express.Router();
 const {
   addNotice,
-  getNotifications,
   getNoticesByCategory,
   getNoticeById,
   addToFavorites,
   removeFromFavorites,
-  updateNotice,
   getMyNotice,
   deleteMyNotice,
   getSearchQuery
@@ -22,38 +20,33 @@ router.post(
   asyncWrapper(addNotice)
 );
 
-router.get("/notices", authMiddleware, asyncWrapper(getNotifications));
+// no need of this route getNotifications
+// router.get("/notices", authMiddleware, asyncWrapper(getNotifications));
 
 // create an endpoint for receiving ads by category
+// correct, no need for authMiddleware
 router.get(
   "/notices/:categoryName",
   asyncWrapper(getNoticesByCategory)
 );
 
 //create an endpoint to receive a single ad
+// no need for authMiddleware
 router.get("/notices/:id", asyncWrapper(getNoticeById));
 
 //create an endpoint to receive ads of an authorized user created by the same user
+//no need for authMiddleware
 router.get("/notices/myNotice", authMiddleware, asyncWrapper(getMyNotice));
 // create an endpoint to delete an authorized user's ad created by the same user
+//no need for authMiddleware
 router.delete("/notices/myNotice", authMiddleware, asyncWrapper(deleteMyNotice));
 
-//create an endpoint to add an ad to favorites
-router.post(
-  "/notices/favorites/:id",
-  asyncWrapper(addToFavorites)
-);
+
 //create an endpoint to receive ads of an authorized user added by him to his favorites
 router.post(
   "/notices/favorites/:id",
   authMiddleware,
   asyncWrapper(addToFavorites)
-);
-
-router.put(
-  "/notices/favorites/:id",
-  authMiddleware,
-  asyncWrapper(updateNotice)
 );
 
 // router.delete(
