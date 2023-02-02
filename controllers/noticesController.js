@@ -30,19 +30,15 @@ const getMyNotice = async (req, res) => {
   if (!myNotices) {
     throw RequestError(404, "Not found");
   }
-  return res.status(200).json(result);
+  return res.status(200).json(myNotices);
 };
 
-
-const deleteMyNotice = async (req, res) => {
-
-};
-
+const deleteMyNotice = async (req, res) => {};
 
 const getSearchQuery = async (req, res) => {
-  const { searchQuery } = req.query;
-
-  const result = await Notices.find({title: searchQuery });
+  const { query } = req.query;
+  // db.notices.createIndex({ title: "text" });
+  const result = await Notices.find({ $text: { $search: query } });
 
   if (!result) {
     throw RequestError(404, "Not found");
@@ -110,17 +106,16 @@ const removeFromFavorites = async (req, res) => {
   return res.status(200).json(result);
 };
 
+const addNotice = async (req, res) => {
+  const { _id } = req.user;
 
-
-  const addNotice = async (req, res) => {
-    const { _id } = req.user;
-
-    const result = await Notices.create({
-      ...req.body,
-      owner: _id,
-    });
-    return res.status(201).json(result);
-  };
+  const result = await Notices.create({
+    ...req.body,
+    owner: _id,
+  });
+  await Notices.createIndex({ title: "text" });
+  return res.status(201).json(result);
+};
 
 module.exports = {
   addNotice,
@@ -130,5 +125,5 @@ module.exports = {
   removeFromFavorites,
   getMyNotice,
   deleteMyNotice,
-  getSearchQuery
+  getSearchQuery,
 };
