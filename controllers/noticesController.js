@@ -11,6 +11,45 @@ const getNoticeById = async (req, res) => {
   return res.status(200).json(result);
 };
 
+// const getMyNotice = async (req, res) => {
+//   const { _id } = req.user;
+
+//   const myNotices = await Notices.find({ owner: _id });
+
+//   if (!myNotices) {
+//     throw RequestError(404, "Not found");
+//   }
+//   return res.status(200).json(result);
+// };
+
+const getMyNotice = async (req, res) => {
+  const { _id } = req.user;
+
+  const myNotices = await Notices.find({ owner: _id });
+
+  if (!myNotices) {
+    throw RequestError(404, "Not found");
+  }
+  return res.status(200).json(result);
+};
+
+
+const deleteMyNotice = async (req, res) => {
+
+};
+
+
+const getSearchQuery = async (req, res) => {
+  const { searchQuery } = req.query;
+
+  const result = await Notices.find({title: searchQuery });
+
+  if (!result) {
+    throw RequestError(404, "Not found");
+  }
+  return res.status(200).json(result);
+};
+
 const getNoticesByCategory = async (req, res) => {
   const { categoryName } = req.params;
   const result = await Notices.find({ categoryName });
@@ -98,7 +137,6 @@ const updateNotice= async (req, res) => {
       ...req.body,
       owner: _id,
     });
-
     return res.status(201).json(result);
   };
 
@@ -109,5 +147,8 @@ module.exports = {
   addToFavorites,
   getNotifications,
   removeFromFavorites,
-  updateNotice
+  updateNotice,
+  getMyNotice,
+  deleteMyNotice,
+  getSearchQuery
 };
