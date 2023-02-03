@@ -33,6 +33,17 @@ const getMyNotice = async (req, res) => {
   return res.status(200).json(myNotices);
 };
 
+const getFavoriteNotices = async (req, res) => {
+  // const { _id } = req.user;
+
+  // const favNotices = await User.find({ _id });
+
+  // if (!favNotices) {
+  //   throw RequestError(404, "Not found");
+  // }
+  return res.status(200).json({});
+};
+
 const deleteMyNotice = async (req, res) => {
   const { _id: userId } = req.user;
   const { noticeId } = req.params;
@@ -138,4 +149,5 @@ module.exports = {
   removeFromFavorites,
   getMyNotice,
   deleteMyNotice,
+  getFavoriteNotices,
 };
