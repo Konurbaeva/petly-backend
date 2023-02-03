@@ -8,6 +8,7 @@ const {
   removeFromFavorites,
   getMyNotice,
   deleteMyNotice,
+  getFavoriteNotices,
 } = require("../controllers/noticesController");
 const { asyncWrapper } = require("../helpers/apiHelpers");
 const { authMiddleware } = require("../middlewares/authMiddleware");
@@ -22,6 +23,8 @@ router.get("/category/:categoryName", asyncWrapper(getNoticesByCategory));
 router.get("/:id", asyncWrapper(getNoticeById));
 
 // create an endpoint to receive ads of an authorized user created by the same user
+router.get("/favNotices", asyncWrapper(getFavoriteNotices));
+
 router.get("/myNotice", authMiddleware, asyncWrapper(getMyNotice));
 //  create an endpoint to delete an authorized user's ad created by the same user
 router.delete("/:id", authMiddleware, asyncWrapper(deleteMyNotice));
