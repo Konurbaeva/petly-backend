@@ -30,6 +30,11 @@
      {
       "name": "Notices",
       "description": "Notices endpoints"
+    },
+
+     {
+      "name": "Pets",
+      "description": "Pets endpoints"
     }
      
   ],
@@ -69,7 +74,7 @@
             "content": {}
           },
           "409": {
-            "description": "Email already exists",
+            "description": "This email is already in use",
             "content": {}
           },
            "500": {
@@ -175,19 +180,17 @@
       "get": {
         "tags": ["User"],
         "summary": "Log out user",
-        "parameters": [],
-        "security": [{ "Bearer": [] }],
-        "requestBody": {
-          "description": "User's object",
-          "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/LogoutRequest"
-              }
-            }
+        "parameters": [
+          {
+            "in": "header",
+            "name": "Authorization",
+            "required": true,
+            "type": "string",
+            "description": "The token issued to the current user"
           }
-        },
+        ],
+        "security": [{ "Bearer": [] }],
+        
         "responses": {
           "200": {
             "description": "The user is logged out",
@@ -217,7 +220,7 @@
         "requestBody": {},
         "responses": {
           "200": {
-            "description": "Ok, Successful operation",
+            "description": "A list of news",
             "content": {
               "application/json": {
                 "schema": {
@@ -225,10 +228,6 @@
                 }
               }
             }
-          },
-          "400": {
-            "description": "Bad request",
-            "content": {}
           },
           "500": {
             "description": "Server error",
@@ -241,7 +240,7 @@
       
       
     },
-    "/api/serveces": {
+    "/api/services": {
       "get": {
         "tags": ["Services-sidebar"],
         "summary": "Get all partners",
@@ -254,14 +253,10 @@
             "content": {
               "multipart/form-data": {
                 "schema": {
-                  "$ref": "#/components/schemas/ServecesResponse"
+                  "$ref": "#/components/schemas/ServicesResponse"
                 }
               }
             }
-          },
-          "400": {
-            "description": "Bad request",
-            "content": {}
           },
           "500": {
             "description": "Server error",
@@ -278,29 +273,21 @@
       "get": {
         "tags": ["User"],
         "summary": "Get information about the current user",
-        "parameters": [],
-        "security": [{ "Bearer": [] }],
-        "requestBody": {
-          "description": "User's object",
-          "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/CurrentRequest"
-              }
-            }
+        "parameters": [
+            {
+            "in": "header",
+            "name": "Authorization",
+            "required": true,
+            "type": "string",
+            "description": "The token issued to the current user"
           }
-        },
+        ],
+        "security": [{ "Bearer": [] }],
+        
         "responses": {
           "200": {
-            "description": "Information found",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/CurrentResponse"
-                }
-              }
-            }
+            "description": "Information found"
+           
           },
           "401": {
             "description": "Missing header with authorization token",
@@ -318,7 +305,25 @@
       "patch": {
         "tags": ["User"],
         "summary": "update avatar",
-        "parameters": [],
+        "parameters": [ 
+          {
+            "in": "path",
+            "name": "userId",
+            "required": true,
+            "type": "string",
+            "description": "User ID"
+            },
+
+
+           {
+             
+            "in": "header",
+            "name": "Authorization",
+            "required": true,
+            "type": "string",
+            "description": "The token issued to the current user"
+          }
+        ],
         "security": [{ "Bearer": [] }],
         "requestBody": {
           "description": "files",
@@ -363,26 +368,30 @@
         "summary": "Notices get All by category",
         "parameters": [
           {
-            "in": "path",
-            "name": "categoryName",
-            "required": true,
+            "in": "query",
+            "name": "sell",
+            
+            "type": "string",
+            "description": "Name of category"
+          },
+           {
+            "in": "query",
+            "name": "lost-found",
+            
+            "type": "string",
+            "description": "Name of category"
+          },
+           {
+            "in": "query",
+            "name": "for-free",
+            
             "type": "string",
             "description": "Name of category"
           }
          
         ],
         "security": [{ "Bearer": [] }],
-        "requestBody": {
-          "description": "object",
-          "required": true,
-          "content": {
-            "multipart/form-data": {
-              "schema": {
-                "$ref": "#/components/schemas/NoticesRequest"
-              }
-            }
-          }
-        },
+        "requestBody": {},
         "responses": {
           "200": {
             "description": "Successful operation, notices found",
@@ -416,6 +425,59 @@
     },
      "/api/notices/favorites/{id}": {
       "get": {
+        "tags": ["Notices"],
+        "summary": "Notices by favorites",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "type": "string",
+            "description": "My favorites"
+          }
+         
+        ],
+        "security": [{ "Bearer": [] }],
+        "requestBody": {
+          "description": "Favorite notices",
+          "required": true,
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "$ref": "#/components/schemas/FavoritesRequest"
+              }
+            }
+          }
+        },
+         "responses": {
+          "200": {
+            "description": "Successful operation, notices found",
+            "content": {
+              "multipart/form-data": {
+                "schema": {
+                  "$ref": "#/components/schemas/FavoritesResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request",
+            "content": {}
+          },
+
+          "404": {
+            "description": "Nothing found",
+            "content": {}
+          },
+           "500": {
+            "description": "Server error",
+            "content": {}
+          }
+        }
+       
+      },
+
+       "post": {
         "tags": ["Notices"],
         "summary": "Notices by favorites",
         "parameters": [
@@ -466,6 +528,425 @@
           }
         }
        
+      },
+
+       "delete": {
+        "tags": ["Notices"],
+        "summary": "Notices by favorites",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "type": "string",
+            "description": "Remove from favorites"
+          }
+         
+        ],
+        "security": [{ "Bearer": [] }],
+        "requestBody": {
+          "description": "Favorite notices",
+          "required": true,
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "$ref": "#/components/schemas/FavoritesRequest"
+              }
+            }
+          }
+        },
+         "responses": {
+          "200": {
+            "description": "Successful operation, notices found",
+            "content": {
+              "multipart/form-data": {
+                "schema": {
+                  "$ref": "#/components/schemas/FavoritesResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request",
+            "content": {}
+          },
+
+          "404": {
+            "description": "Nothing found",
+            "content": {}
+          },
+           "500": {
+            "description": "Server error",
+            "content": {}
+          }
+        }
+       
+      }
+      
+      
+      
+    },
+
+    "/api/notices/{id}": {
+      "get": {
+        "tags": ["Notices"],
+        "summary": "Notices by id",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "type": "string",
+            "description": "Search by id"
+          }
+         
+        ],
+        "security": [{ "Bearer": [] }],
+        "requestBody": {
+          "description": "Search by",
+          "required": true,
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "$ref": "#/components/schemas/FavoritesRequest"
+              }
+            }
+          }
+        },
+         "responses": {
+          "200": {
+            "description": "Successful operation, notices found",
+            "content": {
+              "multipart/form-data": {
+                "schema": {
+                  "$ref": "#/components/schemas/FavoritesResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request",
+            "content": {}
+          },
+
+          "404": {
+            "description": "Nothing found",
+            "content": {}
+          },
+           "500": {
+            "description": "Server error",
+            "content": {}
+          }
+        }
+       
+      }
+      
+      
+      
+    },
+
+    "/api/notices/": {
+      "get": {
+        "tags": ["Notices"],
+        "summary": "My notices",
+        "parameters": [
+           {
+            "in": "path",
+            "name": "userId",
+            "required": true,
+            "type": "string",
+            "description": "User ID"
+            },
+
+
+           {
+             
+            "in": "header",
+            "name": "Authorization",
+            "required": true,
+            "type": "string",
+            "description": "The token issued to the current user"
+          }
+        ],
+        "security": [{ "Bearer": [] }],
+        "requestBody": {},
+        "responses": {
+          "200": {
+            "description": "Successful operation, notices found",
+            "content": {
+              "multipart/form-data": {
+                "schema": {
+                  "$ref": "#/components/schemas/NoticesResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request",
+            "content": {}
+          },
+
+          "404": {
+            "description": "There is no such category.",
+            "content": {}
+          },
+           "500": {
+            "description": "Server error",
+            "content": {}
+          }
+        }
+       
+      },
+      
+        "delete": {
+        "tags": ["Notices"],
+        "summary": "My notices",
+        "parameters": [
+           {
+            "in": "path",
+            "name": "userId",
+            "required": true,
+            "type": "string",
+            "description": "User ID"
+            },
+
+
+           {
+             
+            "in": "header",
+            "name": "Authorization",
+            "required": true,
+            "type": "string",
+            "description": "The token issued to the current user"
+          }
+        ],
+        "security": [{ "Bearer": [] }],
+        "requestBody": {},
+        "responses": {
+          "200": {
+            "description": "Successful operation, notices found",
+            "content": {
+              "multipart/form-data": {
+                "schema": {
+                  "$ref": "#/components/schemas/NoticesResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request",
+            "content": {}
+          },
+
+          "404": {
+            "description": "There is no such category.",
+            "content": {}
+          },
+           "500": {
+            "description": "Server error",
+            "content": {}
+          }
+        }
+       
+      }
+      
+      
+      
+    },
+
+    "/api/notices/myNotice": {
+      "get": {
+        "tags": ["Notices"],
+        "summary": "My notices ",
+        "parameters": [
+           {
+            "in": "path",
+            "name": "userId",
+            "required": true,
+            "type": "string",
+            "description": "User ID"
+            },
+
+
+           {
+             
+            "in": "header",
+            "name": "Authorization",
+            "required": true,
+            "type": "string",
+            "description": "The token issued to the current user"
+          }
+         
+        ],
+        "security": [{ "Bearer": [] }],
+        "requestBody": {
+          "description": "My notices",
+          "required": true,
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "$ref": "#/components/schemas/FavoritesRequest"
+              }
+            }
+          }
+        },
+         "responses": {
+          "200": {
+            "description": "Successful operation, notices found",
+            "content": {
+              "multipart/form-data": {
+                "schema": {
+                  "$ref": "#/components/schemas/FavoritesResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request",
+            "content": {}
+          },
+
+          "404": {
+            "description": "Nothing found",
+            "content": {}
+          },
+           "500": {
+            "description": "Server error",
+            "content": {}
+          }
+        }
+       
+      }
+      
+      
+      
+    },
+     "/api/pets": {
+      "post": {
+        "tags": ["Pets"],
+        "summary": "Create a new pet",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "userId",
+            "required": true,
+            "type": "string",
+            "description": "User ID"
+            },
+
+
+           {
+             
+            "in": "header",
+            "name": "Authorization",
+            "required": true,
+            "type": "string",
+            "description": "The token issued to the current user"
+          }
+        ],
+        "security": [{ "Bearer": [] }],
+        "requestBody": {
+          "description": "New pet",
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RegistrationRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "The pet was successfully created.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RegistrationResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request (invalid request body)",
+            "content": {}
+          },
+          "409": {
+            "description": "this pet already exists",
+            "content": {}
+          },
+           "500": {
+            "description": "Server error",
+            "content": {}
+          }
+        }
+       
+      }
+      
+      
+      
+    },
+
+    "/api/pets/{:id}": {
+      "delete": {
+        "tags": ["Pets"],
+        "summary": "delete this card",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "userId",
+            "required": true,
+            "type": "string",
+            "description": "User ID"
+            },
+
+
+           {
+             
+            "in": "header",
+            "name": "Authorization",
+            "required": true,
+            "type": "string",
+            "description": "The token issued to the current user"
+          }
+        ],
+        "security": [{ "Bearer": [] }],
+        "requestBody": {
+          "description": "remove pet",
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RegistrationRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "The pet was deleted.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RegistrationResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Missing header with authorization token",
+            "content": {}
+          },
+          "404": {
+            "description": "There is no such pet",
+            "content": {}
+          },
+           "500": {
+            "description": "Server error",
+            "content": {}
+          }
+        }
+       
       }
       
       
@@ -508,6 +989,12 @@
           "type": "object",
           "properties": {
 
+            "userId": {
+              "type": "string",
+              "description": "User's id",
+              "example": "63d7b0dfh78956072a3ad82e88"
+            },
+
              "name": {
               "type": "string",
               "description": "User's name",
@@ -518,16 +1005,18 @@
               "description": "User's email",
               "format": "email"
             },
-            "userId": {
+             "token": {
               "type": "string",
-              "description": "User's id",
-              "example": "32143232436545474"
+              "description": "Token",
+              "example": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2M2RjMWIzMjY5NmNjZDA0YzE0MjhhY2EiLCJpYXQiOjE2NzUzNjkyNjh9.B9UOnejWYaaLIiT_E1LQ1NLFHW_QCdc14krYKIFSRho"
             }
+            
+            
           }
         },
         "example": [
-          { "name": "Natalia", "email": "1@gmail.com", "userId": "1" },
-          { "name": "Andriy", "email": "2@gmail.com", "userId": "2" }
+          { "userId": "1", "name": "Natalia", "email": "1@gmail.com", "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2M2RjMWIzMjY5NmNjZDA0YzE0MjhhY2EiLCJpYXQiOjE2NzUzNjkyNjh9.B9UOnejWYaaLIiT_E1LQ1NLFHW_QCdc14krYKIFSRho" },
+          { "userId": "2", "name": "Andriy", "email": "2@gmail.com", "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2M2RjMTYyZWMxZDc5ZWZjYTYwNDc5NzUiLCJpYXQiOjE2NzUzNjgxNjR9.Dq7CNmVyaaCcZJ41vo2D4po3vQTNwyXT_ylcsWC5oFE" }
         ]
       },
 
@@ -560,40 +1049,21 @@
              "token": {
               "type": "string",
               "description": "Token",
-              "example": "ghfg5678ihjk.dftgy6789ohjik.4567fgyhjknjvc"
+              "example": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2M2RjMWIzMjY5NmNjZDA0YzE0MjhhY2EiLCJpYXQiOjE2NzUzNjkyNjh9.B9UOnejWYaaLIiT_E1LQ1NLFHW_QCdc14krYKIFSRho"
             }
           
         },
         "example": 
-          {"email": "1@gmail.com",  "token": "ghfg5678ihjk.dftgy6789ohjik.4567fgyhjknjvc"}
+          {"email": "1@gmail.com",  "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2M2RjMWIzMjY5NmNjZDA0YzE0MjhhY2EiLCJpYXQiOjE2NzUzNjkyNjh9.B9UOnejWYaaLIiT_E1LQ1NLFHW_QCdc14krYKIFSRho"}
       },
 
-      "LogoutRequest": {
-        "type": "object",
-        "required": ["userId", "token"],
-        "properties": {
-          "userId": {
-              "type": "string",
-              "description": "User's id",
-              "example": "32143232436545474"
-            },
-          "token": {
-            "type": "string",
-            "description": "User's token",
-            "example": "1234erstxcyhj.234fdftgvbnmk.4tfyughbuninm"
-          }
-        }
-      },
+     
 
           "UpdateRequest": {
         "type": "object",
         
         "properties": {
-          "userId": {
-              "type": "string",
-              "description": "User's id",
-              "example": "32143232436545474"
-            },
+          
           "email": {
             "type": "string",
             "description": "User's email",
@@ -677,9 +1147,258 @@
       
           
           }
+        },
+
+           "AvatarRequest": {
+        "type": "object",
+        
+        "properties": {
+            "avatarURL": {
+              "type": "string",
+              "description": "Avatar",
+              "format": "binary",
+              "example": "https://res.cloudinary.com/dr525ee18/image/upload/v1675106400/partners/frame_287_sukix5.png"
+            }
+          
         }
+      },
+      "AvatarResponse": {
+        
+          "type": "object",
+          "properties": {
+          
+            "avatarURL": {
+              "type": "string",
+              "description": "Avatar",
+              "format": "binary",
+              "example": "https://res.cloudinary.com/dr525ee18/image/upload/v1675106400/partners/frame_287_sukix5.png"
+            }
+      
+          
+          }
+        },
+        
+
+
+      "NewsResponse": {
+         "type": "array",
+        "items": {
+          "type": "object",
+          "properties": {
+
+            "id": {
+              "type": "string",
+              "description": "id",
+              "example": "63d7b0396656072a3ad82e88"
+            },
+             "title": {
+              "type": "string",
+              "description": "User's name",
+              "example": "Title"
+            },
+              "url": {
+              "type": "string",
+              "description": "Url",
+              "example": "https://docs.google.com/spreadsheets/d/1A8ly_RzN0fQZGNPwayRwEHm4iOAumuQh/edit#gid=1786629929"
+            },
+             "description": {
+              "type": "string",
+              "description": "Aricle"
+              
+            },
+              "date": {
+              "type": "string",
+              "description": "date",
+              "example": "15-12-2022"
+            }
+          }
+        }
+      },
+
+      "ServicesResponse": {
+         "type": "array",
+        "items": {
+          "type": "object",
+          "properties": {
+
+            "id": {
+              "type": "string",
+              "description": "id",
+              "example": "63d7b0396656072a3ad82e88"
+            },
+             "title": {
+              "type": "string",
+              "description": "User's name",
+              "example": "Title"
+            },
+              "url": {
+              "type": "string",
+              "description": "Url",
+              "example": "https://docs.google.com/spreadsheets/d/1A8ly_RzN0fQZGNPwayRwEHm4iOAumuQh/edit#gid=1786629929"
+            },
+             "addressUrl": {
+              "type": "string",
+              "description": "addressUrl",
+              "example": "https://goo.gl/maps/iq8NXEUf31EAQCzc6"
+            },
+              "imageUrl": {
+              "type": "string",
+              "description": "imageUrl",
+              "example": "https://res.cloudinary.com/dr525ee18/image/upload/v1675106400/partners/frame_287_sukix5.png"
+            },
+            
+             "address": {
+              "type": "string",
+              "description": "address",
+              "example": "Fedorivka, Kyiv Oblast, Ukraine, 07372"
+            },
+            " workDays": {
+              "type": "Array",
+              "description": " workDays",
+              "example": [
+            {
+                "isOpen": false
+            },
+            {
+                "isOpen": false
+            },
+            {
+                "isOpen": false
+            },
+            {
+                "isOpen": false
+            },
+            {
+                "isOpen": false
+            },
+            {
+                "isOpen": true,
+                "from": "11:00",
+                "to": "16:00"
+            },
+            {
+                "isOpen": true,
+                "from": "11:00",
+                "to": "16:00"
+            }
+        ]
+            },
+             "phone": {
+            "type": "string",
+            "description": "Phone",
+            "example": "+380990976783"
+          },
+           "email": {
+            "type": "string",
+            "description": "Email",
+            "format": "email"
+          }
+          }
+        }
+      },
+
+      "NoticesResponse": {
+         "type": "array",
+        "items": {
+          "type": "object",
+          "properties": {
+
+            "id": {
+              "type": "string",
+              "description": "id",
+              "example": "63d7b0396656072a3ad82e88"
+            },
+             "title": {
+              "type": "string",
+              "description": "User's name",
+              "example": "Title"
+            },
+              "name": {
+              "type": "string",
+              "description": "Name",
+              "example": "Teo"
+            },
+             
+              "birthdate": {
+              "type": "string",
+              "description": "date",
+              "example": "25-02-2022"
+            },
+             "breed": {
+              "type": "string",
+              "description": "breed",
+              "example": "Exot"
+            },
+             "location": {
+              "type": "string",
+              "description": "Location",
+              "example": "Fedorivka, Kyiv Oblast, Ukraine, 07372"
+            },
+             "comments": {
+              "type": "string",
+              "description": "Comments",
+              "example": "A little cat"
+            },
+             "price": {
+              "type": "integer",
+
+              "description": "Price",
+              "example": "5000"
+            },
+            "categoryName": {
+              "type": "string",
+              "enum": ["sell", "lost-found", "for-free"],
+              "description": "categoryName",
+              "example": "lost-found"
+            }
+            
+
+          }
+        }
+      },
+
+      "FavoritesRequest": {
+        "type": "object",
+        "required": ["email", "password"],
+        "properties": {
+          "email": {
+            "type": "string",
+            "description": "User's email",
+            "format": "email"
+          },
+          "password": {
+            "type": "string",
+            "description": "User's password",
+            "example": "qwerty123"
+          }
+        }
+      },
+      "FavoritesResponse": {
+        "type": "object",
+       
+          "properties": {
+
+              "email": {
+              "type": "string",
+              "description": "User's email",
+              "format": "email"
+            },
+             "token": {
+              "type": "string",
+              "description": "Token",
+              "example": "ghfg5678ihjk.dftgy6789ohjik.4567fgyhjknjvc"
+            }
+          
+        },
+        "example": 
+          {"email": "1@gmail.com",  "token": "ghfg5678ihjk.dftgy6789ohjik.4567fgyhjknjvc"}
+      },
+
+
 
     },
+
+    
     "securitySchemes": {
       "Bearer": {
         "type": "http",
