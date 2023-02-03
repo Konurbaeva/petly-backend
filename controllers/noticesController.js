@@ -53,20 +53,15 @@ const deleteMyNotice = async (req, res) => {
   return res.status(200).json({ message: "Success" });
 };
 
-const getSearchQuery = async (req, res) => {
-  const { query } = req.query;
-  // db.notices.createIndex({ title: "text" });
-  const result = await Notices.find({ $text: { $search: query } });
-
-  if (!result) {
-    throw RequestError(404, "Not found");
-  }
-  return res.status(200).json(result);
-};
-
 const getNoticesByCategory = async (req, res) => {
   const { categoryName } = req.params;
-  const result = await Notices.find({ categoryName });
+  const { query } = req.query;
+  const options =
+    query === undefined
+      ? { categoryName }
+      : { categoryName, $text: { $search: query } };
+
+  const result = await Notices.find(options);
 
   if (!result) {
     throw RequestError(404, "Not found");
@@ -143,5 +138,4 @@ module.exports = {
   removeFromFavorites,
   getMyNotice,
   deleteMyNotice,
-  getSearchQuery,
 };
