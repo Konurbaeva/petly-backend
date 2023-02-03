@@ -11,7 +11,7 @@
   },
   "consumes": ["application/json", "multipart/form-data"],
   "produces": ["application/json", "multipart/form-data"],
-  "servers": [{ "url": "http://localhost:3000" }],
+  "servers": [{ "url": "https://goit-project-petly-backend.onrender.com" }],
   "tags": [
      {
       "name": "User",
@@ -217,7 +217,6 @@
         "summary": "Get all news",
         "parameters": [],
         
-        "requestBody": {},
         "responses": {
           "200": {
             "description": "A list of news",
@@ -246,7 +245,7 @@
         "summary": "Get all partners",
         "parameters": [],
         "security": [{ "Bearer": [] }],
-        "requestBody": {},
+       
         "responses": {
           "200": {
             "description": "Ok, Successful operation",
@@ -265,8 +264,7 @@
         }
        
       }
-      
-      
+       
       
     },
     "api/users/current": {
@@ -301,89 +299,15 @@
       
       
     },
-    "/api/users/avatar": {
-      "patch": {
-        "tags": ["User"],
-        "summary": "update avatar",
-        "parameters": [ 
-          {
-            "in": "path",
-            "name": "userId",
-            "required": true,
-            "type": "string",
-            "description": "User ID"
-            },
-
-
-           {
-             
-            "in": "header",
-            "name": "Authorization",
-            "required": true,
-            "type": "string",
-            "description": "The token issued to the current user"
-          }
-        ],
-        "security": [{ "Bearer": [] }],
-        "requestBody": {
-          "description": "files",
-          "required": true,
-          "content": {
-            "multipart/form-data": {
-              "schema": {
-                "$ref": "#/components/schemas/AvatarRequest"
-              }
-            }
-          }
-        },
-        "responses": {
-          "200": {
-            "description": "The avatar was successfully updated",
-            "content": {
-              "multipart/form-data": {
-                "schema": {
-                  "$ref": "#/components/schemas/AvatarResponse"
-                }
-              }
-            }
-          },
-          "400": {
-            "description": "Avatar update failed",
-            "content": {}
-          },
-          "401": {
-            "description": "Missing header with authorization token",
-            "content": {}
-          }
-        }
-       
-      }
-      
-      
-      
-    },
-        "/api/notices/{categoryName}": {
+    
+        "/api/notices/category/{categoryName}": {
       "get": {
         "tags": ["Notices"],
-        "summary": "Notices get All by category",
+        "summary": "Notices by category",
         "parameters": [
           {
-            "in": "query",
-            "name": "sell",
-            
-            "type": "string",
-            "description": "Name of category"
-          },
-           {
-            "in": "query",
-            "name": "lost-found",
-            
-            "type": "string",
-            "description": "Name of category"
-          },
-           {
-            "in": "query",
-            "name": "for-free",
+            "in": "path",
+            "name": "categoryName",
             
             "type": "string",
             "description": "Name of category"
@@ -391,7 +315,7 @@
          
         ],
         "security": [{ "Bearer": [] }],
-        "requestBody": {},
+        
         "responses": {
           "200": {
             "description": "Successful operation, notices found",
@@ -402,10 +326,6 @@
                 }
               }
             }
-          },
-          "400": {
-            "description": "Bad request",
-            "content": {}
           },
 
           "404": {
@@ -1046,15 +966,14 @@
               "description": "User's email",
               "format": "email"
             },
-             "token": {
+             "": {
               "type": "string",
               "description": "Token",
               "example": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2M2RjMWIzMjY5NmNjZDA0YzE0MjhhY2EiLCJpYXQiOjE2NzUzNjkyNjh9.B9UOnejWYaaLIiT_E1LQ1NLFHW_QCdc14krYKIFSRho"
             }
           
-        },
-        "example": 
-          {"email": "1@gmail.com",  "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2M2RjMWIzMjY5NmNjZDA0YzE0MjhhY2EiLCJpYXQiOjE2NzUzNjkyNjh9.B9UOnejWYaaLIiT_E1LQ1NLFHW_QCdc14krYKIFSRho"}
+        }
+       
       },
 
      
@@ -1142,34 +1061,6 @@
             "avatarURL": {
               "type": "string",
               "description": "Avatar",
-              "format": "binary"
-            }
-      
-          
-          }
-        },
-
-           "AvatarRequest": {
-        "type": "object",
-        
-        "properties": {
-            "avatarURL": {
-              "type": "string",
-              "description": "Avatar",
-              "format": "binary",
-              "example": "https://res.cloudinary.com/dr525ee18/image/upload/v1675106400/partners/frame_287_sukix5.png"
-            }
-          
-        }
-      },
-      "AvatarResponse": {
-        
-          "type": "object",
-          "properties": {
-          
-            "avatarURL": {
-              "type": "string",
-              "description": "Avatar",
               "format": "binary",
               "example": "https://res.cloudinary.com/dr525ee18/image/upload/v1675106400/partners/frame_287_sukix5.png"
             }
@@ -1177,8 +1068,8 @@
           
           }
         },
-        
 
+        
 
       "NewsResponse": {
          "type": "array",
@@ -1392,7 +1283,7 @@
         },
         "example": 
           {"email": "1@gmail.com",  "token": "ghfg5678ihjk.dftgy6789ohjik.4567fgyhjknjvc"}
-      },
+      }
 
 
 
