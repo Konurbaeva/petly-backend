@@ -85,8 +85,13 @@ const addToFavorites = async (req, res) => {
   if (!notice) {
     throw RequestError(404, "Notice not found");
   }
-  await User.findByIdAndUpdate(userId, { $push: { favorites: notice } }, {new: true})
-  
+  // check if notice is already in WISHLIST
+  const { favorites } = await User.findById(userId);
+  if (favorites.includes(noticeId)) {
+    throw RequestError(400, "Notice is already in Wishlist");
+  }
+  // 
+  await User.findByIdAndUpdate(userId, { $push: { favorites: noticeId } }, {new: true})
   return res.status(200).json({"message": "Notice added to wishlist", "notice": notice});
 };
 
@@ -99,7 +104,7 @@ const removeFromFavorites = async (req, res) => {
     throw RequestError(404, "Notice not found");
   }
 
-  await User.findByIdAndUpdate(userId, { $pull: { favorites: notice } }, { new: true });
+  await User.findByIdAndUpdate(userId, { $pull: { favorites: noticeId } }, { new: true });
   
   return res.status(200).json({"message": "Notice removed from wishlist", "notice": notice});
 
