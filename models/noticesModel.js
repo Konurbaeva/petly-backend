@@ -1,33 +1,38 @@
 const { Schema, model } = require("mongoose");
+const Joi = require("joi");
+
+const handleMongooseError = require("../helpers/handleMongooseError");
+
 
 const noticesShema = new Schema({
   title: {
     type: String,
-    minlength: 2,
-    maxlength: 50,
-    required: true,
+    required: [true, "Title is required"],
   },
   name: {
     type: String,
-    minlength: 2,
-    maxlength: 20,
+    default: null,
   },
   birthdate: {
-    type: Date,
+    type: String,
+    default: null,
   },
   breed: {
     type: String,
-    minlength: 2,
-    maxlength: 25,
+    default: null,
   },
   location: {
     type: String,
+    default: null,
   },
   comments: {
     type: String,
-    minlength: 8,
-    maxlength: 120,
-    required: true,
+    default: null,
+  },
+   categoryName: {
+    type: String,
+    enum: ["sell", "lost-found", "for-free"],
+    default: "sell",
   },
   price: {
     type: Number,
@@ -36,15 +41,46 @@ const noticesShema = new Schema({
       return this.categoryName === "sell";
     },
   },
-  categoryName: {
+  photo: {
     type: String,
-    enum: ["sell", "lost-found", "for-free"],
-    default: "sell",
+    default: null
   },
- owner: [{type: Schema.Types.ObjectId, ref: 'User'}],
+  sex: {
+    type: String,
+    enum: ["male", "female"],
+    default: "male",
+  },
+  owner: {
+    type: Schema.Types.ObjectId,
+    ref: 'User',
+  }
+},
+ { versionKey: false, timestamps: true }
+);
+
+noticesShema.post("save", handleMongooseError);
+
+
+const noticeValidateSchema = Joi.object({
+  title: Joi.string().min(2).max(50).required(),
+  name: Joi.string().min(2).max(20).allow(null, ''),
+  birthdate: Joi.string().allow(null, ''),
+  breed: Joi.string().min(2).max(25).allow(null, ''),
+  location: Joi.string().allow(null, ''),
+  comments: Joi.string().min(8).max(120).allow(null, ''),
+  categoryName: Joi.string().valid("sell", "lost-found", "for-free"),
+  sex: Joi.string().valid("male", "female"),
+  price: Joi.number().allow(null, ''),
+  photo: Joi.allow(null, ''),
 });
 
+const schemas = {
+  noticeValidateSchema,
+};
+
 const Notices = model("notices", noticesShema);
+
 module.exports = {
   Notices,
+  schemas
 };
