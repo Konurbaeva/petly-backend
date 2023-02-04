@@ -64,10 +64,18 @@ const loginSchema = Joi.object({
   password: Joi.string().required(),
   email: Joi.string().email().required(),
 });
+const updateFieldSchema = Joi.object({
+  email: Joi.string().email(),
+  name: Joi.string(),
+  address: Joi.string(),
+  phone: Joi.string().pattern(phoneRegExp),
+  birthday: Joi.string(),
+});
 
 const schemas = {
   registerSchema,
   loginSchema,
+  updateFieldSchema
 };
 
 const User = mongoose.model("User", userSchema);

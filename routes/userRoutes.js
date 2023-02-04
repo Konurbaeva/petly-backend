@@ -13,7 +13,7 @@ router.post('/register', validateBody(schemas.registerSchema), asyncWrapper(regi
 router.post('/login', validateBody(schemas.loginSchema), asyncWrapper(loginController));
 router.get('/current', authMiddleware, asyncWrapper(getCurrentController));
 router.get('/logout', authMiddleware, asyncWrapper(logoutController));
-router.patch('/update', authMiddleware, asyncWrapper(updateController));
+router.patch('/update', authMiddleware, validateBody(schemas.updateFieldSchema), asyncWrapper(updateController));
 router.patch('/avatar', authMiddleware, upload.single('avatar'), asyncWrapper(avatarController))
 
 module.exports = router
