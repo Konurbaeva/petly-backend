@@ -12,9 +12,14 @@ const {
 } = require("../controllers/noticesController");
 const { asyncWrapper } = require("../helpers/apiHelpers");
 const { authMiddleware } = require("../middlewares/authMiddleware");
+const { upload } = require('../middlewares/upload');
+const {schemas} = require('../models/noticesModel')
+const validateBody = require('../middlewares/validateBody');
 
+
+// upload.single('photo'),
 // create an endpoint to add ads according to the selected category
-router.post("/", authMiddleware, asyncWrapper(addNotice));
+router.post("/", authMiddleware, upload.single('photo'), validateBody(schemas.noticeValidateSchema), asyncWrapper(addNotice));
 
 // create an endpoint for receiving ads by category
 router.get("/category/:categoryName", asyncWrapper(getNoticesByCategory));
