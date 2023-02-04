@@ -5,14 +5,6 @@ const cloudinary = require('cloudinary').v2;
 const fs = require('fs/promises');
 const Jimp = require('jimp');
 
-// Don't remove this config
-// cloudinary.config({ 
-//   cloud_name: 'dr525ee18', 
-//     api_key: process.env.CLOUDINARY_API_KEY,
-//     api_secret: process.env.CLOUDINARY_API_SECRET,
-//   secure: true
-// });
-
 const RequestError = require('../helpers/RequestError');
 const { User } = require('../models/userModel');
 
@@ -84,6 +76,10 @@ const avatarController = async (req, res) => {
     return res.status(200).json({  avatarURL });
     
 }
+
+const getStatusController = async (req, res) => { 
+    return res.status(200).json({  message: "Information found" });
+}
 module.exports = {
-    registerController, loginController, getCurrentController, logoutController, updateController, avatarController
+    registerController, loginController, getCurrentController, logoutController, updateController, avatarController, getStatusController
 }
