@@ -7,21 +7,18 @@ const { User } = require('../models/userModel');
 const RequestError = require('../helpers/RequestError');
 
 const createPetController = async (req, res) => {
-    // console.log(req.file);
-    // console.log(req.body);
-    const { path: tempUpload, originalname } = req.file;
     const { _id: userID } = req.user
-    const { name, birthday, breed, comments } = req.body;
-    
+    let petImgURL = null;
 
-    const filename = `${userID}_${originalname}`
-    
-    const result = await cloudinary.uploader.upload(tempUpload, { public_id: filename }, function (error, result) { });
-    const { secure_url: petImgURL } = result;
-    await fs.unlink(tempUpload);
-
-
-    const pet = new Pet({name, birthday, breed, comments, photo: petImgURL, owner: userID});
+    if (req.file) {
+        const { path: tempUpload, originalname } = req.file;
+        const filename = `${userID}_${originalname}`
+        const result = await cloudinary.uploader.upload(tempUpload, { public_id: filename }, function (error, result) { });
+        const { secure_url } = result;
+        await fs.unlink(tempUpload);
+        petImgURL = secure_url;
+    }
+    const pet = new Pet({ ...req.body, photo: petImgURL, owner: userID});
     await pet.save();
 
     await User.findByIdAndUpdate(userID, {$push: {pets: pet} })

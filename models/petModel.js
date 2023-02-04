@@ -41,6 +41,7 @@ const petValidateSchema = Joi.object({
   birthday: Joi.string().required(),
   breed: Joi.string().min(3).max(25).required(),
   comments: Joi.string().allow(null, ''),
+  photo: Joi.allow(null, ''),
 });
 
 const schemas = {
