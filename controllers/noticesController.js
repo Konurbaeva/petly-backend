@@ -1,3 +1,6 @@
+const cloudinary = require('cloudinary').v2;
+const fs = require('fs/promises');
+
 const { RequestError } = require("../helpers");
 const { Notices } = require("../models/noticesModel");
 const { User } = require("../models/userModel");
@@ -71,7 +74,6 @@ const getNoticesByCategory = async (req, res) => {
     query === undefined
       ? { categoryName }
       : { categoryName, $text: { $search: query } };
-
   const result = await Notices.find(options);
 
   if (!result) {
@@ -131,14 +133,26 @@ const removeFromFavorites = async (req, res) => {
 };
 
 const addNotice = async (req, res) => {
-  const { _id } = req.user;
+  const { _id: userID } = req.user
 
-  const result = await Notices.create({
-    ...req.body,
-    owner: _id,
-  });
-  await Notices.createIndex({ title: "text" });
-  return res.status(201).json(result);
+  let noticeImgURL = null;
+  
+  if (req.file) {
+    const { path: tempUpload, originalname } = req.file;
+    const filename = `${userID}_${originalname}`
+    const result = await cloudinary.uploader.upload(tempUpload, { public_id: filename }, function (error, result) {});
+    const { secure_url } = result;
+    await fs.unlink(tempUpload);
+    noticeImgURL = secure_url;
+  }
+    
+  const notice = new Notices({... req.body, photo: noticeImgURL, owner: userID});
+  await notice.save();
+
+  // const database = client.db("db-testDB");
+  // console.log(database);
+  // await Notices.createIndex({ title: "text" });
+  return res.status(201).json(notice);
 };
 
 module.exports = {
