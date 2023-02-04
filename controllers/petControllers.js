@@ -1,6 +1,5 @@
 const cloudinary = require('cloudinary').v2;
 const fs = require('fs/promises');
-const Jimp = require('jimp');
 require('dotenv').config();
 
 const { Pet } = require('../models/petModel');
@@ -17,13 +16,7 @@ const createPetController = async (req, res) => {
 
     const filename = `${userID}_${originalname}`
     
-    const croppedPetImg = await Jimp.read(tempUpload);
-    croppedPetImg.cover(350, 350).write(tempUpload);
-
-    const result = await cloudinary.uploader.upload(tempUpload, { public_id: filename },
-        function (error, result) {
-            // console.log(result);
-        });
+    const result = await cloudinary.uploader.upload(tempUpload, { public_id: filename }, function (error, result) { });
     const { secure_url: petImgURL } = result;
     await fs.unlink(tempUpload);
 
