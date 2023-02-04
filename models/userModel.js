@@ -41,7 +41,7 @@ const userSchema = new mongoose.Schema(
       default: null,
     },
     pets: [{type: mongoose.Schema.Types.ObjectId, ref: 'Pet'}],
-    favorites: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Notices' }]
+    favorites: [{ type: mongoose.Schema.Types.ObjectId, ref: 'notices' }]
   },
   { versionKey: false, timestamps: true }
 );
