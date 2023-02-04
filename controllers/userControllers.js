@@ -76,11 +76,7 @@ const avatarController = async (req, res) => {
     const croppedAvatar = await Jimp.read(tempUpload);
     croppedAvatar.cover(350, 350).write(tempUpload);
 
-    const result = await cloudinary.uploader.upload(tempUpload, { public_id: filename },
-        function (error, result) {
-            // console.log(result);
-            return error
-        });
+    const result = await cloudinary.uploader.upload(tempUpload, { public_id: filename }, function (error, result) {  });
     const { secure_url: avatarURL } = result;
     await fs.unlink(tempUpload);
 
