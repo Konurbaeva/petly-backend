@@ -5,14 +5,6 @@ const cloudinary = require('cloudinary').v2;
 const fs = require('fs/promises');
 const Jimp = require('jimp');
 
-// Don't remove this config
-// cloudinary.config({ 
-//   cloud_name: 'dr525ee18', 
-//     api_key: process.env.CLOUDINARY_API_KEY,
-//     api_secret: process.env.CLOUDINARY_API_SECRET,
-//   secure: true
-// });
-
 const RequestError = require('../helpers/RequestError');
 const { User } = require('../models/userModel');
 
@@ -27,8 +19,8 @@ const registerController = async (req, res) => {
 }
 
 const loginController = async (req, res) => {
-    const { email, password } = req.body;
-    const user = await User.findOne({ email });
+    const { email: reqEmail, password } = req.body;
+    const user = await User.findOne({ email: reqEmail });
     
     if (!user) {
         throw RequestError(401, 'User with this email not found')
@@ -38,9 +30,11 @@ const loginController = async (req, res) => {
         throw RequestError(401, 'Wrong password')
     }
 
-    const token = jwt.sign({ _id: user._id }, process.env.JWT_SECRET);
-    await User.findByIdAndUpdate(user._id, {token});
-    return res.status(200).json({ email, token });
+    const userToken = jwt.sign({ _id: user._id }, process.env.JWT_SECRET);
+    const updatedUser = await User.findByIdAndUpdate(user._id, { token: userToken }, {new: true}).populate("pets", "_id name birthday breed photo comments");
+
+    const { email, name, address, phone, birthday, avatarURL, token, pets, favorites } = updatedUser
+    return res.status(200).json({ email, name, address, phone, birthday, avatarURL, token, pets, favorites });
 }
 
 const getCurrentController = async (req, res) => {
@@ -74,11 +68,7 @@ const avatarController = async (req, res) => {
     const croppedAvatar = await Jimp.read(tempUpload);
     croppedAvatar.cover(350, 350).write(tempUpload);
 
-    const result = await cloudinary.uploader.upload(tempUpload, { public_id: filename },
-        function (error, result) {
-            // console.log(result);
-            return error
-        });
+    const result = await cloudinary.uploader.upload(tempUpload, { public_id: filename }, function (error, result) {  });
     const { secure_url: avatarURL } = result;
     await fs.unlink(tempUpload);
 
@@ -86,6 +76,10 @@ const avatarController = async (req, res) => {
     return res.status(200).json({  avatarURL });
     
 }
+
+const getStatusController = async (req, res) => { 
+    return res.status(200).json({  message: "Information found" });
+}
 module.exports = {
-    registerController, loginController, getCurrentController, logoutController, updateController, avatarController
+    registerController, loginController, getCurrentController, logoutController, updateController, avatarController, getStatusController
 }

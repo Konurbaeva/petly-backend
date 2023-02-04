@@ -41,7 +41,7 @@ const userSchema = new mongoose.Schema(
       default: null,
     },
     pets: [{type: mongoose.Schema.Types.ObjectId, ref: 'Pet'}],
-    favorites: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Notices' }]
+    favorites: [{ type: mongoose.Schema.Types.ObjectId, ref: 'notices' }]
   },
   { versionKey: false, timestamps: true }
 );
@@ -64,10 +64,18 @@ const loginSchema = Joi.object({
   password: Joi.string().required(),
   email: Joi.string().email().required(),
 });
+const updateFieldSchema = Joi.object({
+  email: Joi.string().email(),
+  name: Joi.string(),
+  address: Joi.string(),
+  phone: Joi.string().pattern(phoneRegExp),
+  birthday: Joi.string(),
+});
 
 const schemas = {
   registerSchema,
   loginSchema,
+  updateFieldSchema
 };
 
 const User = mongoose.model("User", userSchema);

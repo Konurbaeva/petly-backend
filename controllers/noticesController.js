@@ -1,28 +1,34 @@
+const cloudinary = require('cloudinary').v2;
+const fs = require('fs/promises');
+
 const { RequestError } = require("../helpers");
 const { Notices } = require("../models/noticesModel");
 const { User } = require("../models/userModel");
 
-const getNoticeById = async (req, res) => {
-  const { id } = req.params;
-  const result = await Notices.findOne({ _id: id });
-  if (!result) {
-    throw RequestError(404, "Not found");
+const addNotice = async (req, res) => {
+  const { _id: userID } = req.user
+
+  let noticeImgURL = null;
+  
+  if (req.file) {
+    const { path: tempUpload, originalname } = req.file;
+    const filename = `${userID}_${originalname}`
+    const result = await cloudinary.uploader.upload(tempUpload, { public_id: filename }, function (error, result) {});
+    const { secure_url } = result;
+    await fs.unlink(tempUpload);
+    noticeImgURL = secure_url;
   }
-  return res.status(200).json(result);
+    
+  const notice = new Notices({... req.body, photo: noticeImgURL, owner: userID});
+  await notice.save();
+
+  // const database = client.db("db-testDB");
+  // console.log(database);
+  // await Notices.createIndex({ title: "text" });
+  return res.status(201).json(notice);
 };
 
-// const getMyNotice = async (req, res) => {
-//   const { _id } = req.user;
-
-//   const myNotices = await Notices.find({ owner: _id });
-
-//   if (!myNotices) {
-//     throw RequestError(404, "Not found");
-//   }
-//   return res.status(200).json(result);
-// };
-
-const getMyNotice = async (req, res) => {
+const getMyNotices = async (req, res) => {
   const { _id } = req.user;
 
   const myNotices = await Notices.find({ owner: _id });
@@ -33,35 +39,26 @@ const getMyNotice = async (req, res) => {
   return res.status(200).json(myNotices);
 };
 
-const getFavoriteNotices = async (req, res) => {
-  // const { _id } = req.user;
-
-  // const favNotices = await User.find({ _id });
-
-  // if (!favNotices) {
-  //   throw RequestError(404, "Not found");
-  // }
-  return res.status(200).json({});
+const getNoticeById = async (req, res) => {
+  const { id } = req.params;
+  const result = await Notices.findOne({ _id: id });
+  if (!result) {
+    throw RequestError(404, "Not found");
+  }
+  return res.status(200).json(result);
 };
 
 const deleteMyNotice = async (req, res) => {
   const { _id: userId } = req.user;
-  const { noticeId } = req.params;
+  const { id } = req.params;
 
-  const deletedNotice = await Notices.findOneAndDelete({ owner: userId });
+  const deletedNotice = await Notices.findOneAndDelete({_id: id, owner: userId});
 
   if (!deletedNotice) {
     throw RequestError(404, "Notice not found");
   }
-
-  await User.findByIdAndUpdate(
-    userId,
-    { $pull: { notices: noticeId } },
-    { new: true }
-  );
-  await Notices.createIndex({ title: "text" });
-
-  return res.status(200).json({ message: "Success" });
+  // await Notices.createIndex({ title: "text" });
+  return res.status(200).json({ message: "Notice deleted" });
 };
 
 const getNoticesByCategory = async (req, res) => {
@@ -71,7 +68,6 @@ const getNoticesByCategory = async (req, res) => {
     query === undefined
       ? { categoryName }
       : { categoryName, $text: { $search: query } };
-
   const result = await Notices.find(options);
 
   if (!result) {
@@ -81,65 +77,59 @@ const getNoticesByCategory = async (req, res) => {
 };
 
 const addToFavorites = async (req, res) => {
-  const userId = req.body.userId;
-  const favId = req.params.id;
-  const result = await User.findOneAndUpdate(
-    { _id: userId },
-    { $push: { favorites: favId } },
-    { new: true }
-  );
+  const { _id: userId } = req.user;
+  const { id: noticeId } = req.params;
+  // can use only id to pull or push
 
-  if (!result) {
-    throw RequestError(404, "Not found");
+  const notice = await Notices.findById(noticeId);
+  if (!notice) {
+    throw RequestError(404, "Notice not found");
   }
-  return res.status(201).json(result);
+  // check if notice is already in WISHLIST
+  const { favorites } = await User.findById(userId);
+  if (favorites.includes(noticeId)) {
+    throw RequestError(400, "Notice is already in Wishlist");
+  }
+  // 
+  await User.findByIdAndUpdate(userId, { $push: { favorites: noticeId } }, {new: true})
+  return res.status(200).json({"message": "Notice added to wishlist", "notice": notice});
 };
 
-// const removeFromFavorites = async (req, res) => {
-//   // is it req.user._id or  const userId = req.body.userId?
-//   //  const userId = req.body.userId;
-//   const userId = req.user._id;
-//   const favId = req.params.id;
-
-//   const result = await User.findOneAndUpdate(
-//     { _id: userId },
-//     { $pull: { favorites: favId } },
-//     { new: true }
-//     );
-
-//     if(!result) {
-//       throw RequestError(404, "Not found");
-//       }
-//     return res.status(200).json(result);
-// };
 const removeFromFavorites = async (req, res) => {
-  // is it req.user._id or  const userId = req.body.userId?
-  //  const userId = req.body.userId;
-  const userId = req.user._id;
-  const favId = req.params.id;
-
-  const result = await User.findOneAndRemove(
-    { _id: userId },
-    { $pull: { favorites: favId } },
-    { new: true }
-  );
-
-  if (!result) {
-    throw RequestError(404, "Not found");
+  const { _id: userId } = req.user;
+  const { id: noticeId } = req.params;
+  // can use only id to pull or push
+  const notice = await Notices.findById(noticeId);
+  if (!notice) {
+    throw RequestError(404, "Notice not found");
   }
-  return res.status(200).json(result);
+
+  await User.findByIdAndUpdate(userId, { $pull: { favorites: noticeId } }, { new: true });
+  
+  return res.status(200).json({"message": "Notice removed from wishlist", "notice": notice});
+
 };
 
-const addNotice = async (req, res) => {
-  const { _id } = req.user;
 
-  const result = await Notices.create({
-    ...req.body,
-    owner: _id,
-  });
-  await Notices.createIndex({ title: "text" });
-  return res.status(201).json(result);
+const getFavoriteNotices = async (req, res) => {
+  const { _id: userId } = req.user;
+  
+  const UserWithFavNotices = await User.findById(userId).populate("favorites", "title name birthdate breed location comments categoryName price photo sex owner");
+  const { favorites } = UserWithFavNotices
+
+  return res.status(200).json({ favorites });
 };
+
+
+
+
+
+
+
+
+
+
+
 
 module.exports = {
   addNotice,
@@ -147,7 +137,7 @@ module.exports = {
   getNoticeById,
   addToFavorites,
   removeFromFavorites,
-  getMyNotice,
+  getMyNotices,
   deleteMyNotice,
   getFavoriteNotices,
 };
