@@ -134,7 +134,16 @@
       "patch": {
         "tags": ["User"],
         "summary": "Update an existing user",
-        "parameters": [],
+        "parameters": [ 
+          {
+             "in": "header",
+            "name": "Authorization",
+            "required": true,
+            "type": "string",
+            "description": "The token issued to the current user"
+          }
+         
+        ],
         "security": [{ "Bearer": [] }],
         "requestBody": {
           "description": "User's object",
@@ -284,7 +293,14 @@
         
         "responses": {
           "200": {
-            "description": "Information found"
+            "description": "Information found",
+             "content": {
+              "multipart/form-data": {
+                "schema": {
+                  "$ref": "#/components/schemas/UpdateResponse"
+                }
+              }
+            }
            
           },
           "401": {
@@ -343,7 +359,7 @@
       
       
     },
-     "/api/notices/favorites/{id}": {
+     "/api/notices//myNotice": {
       "get": {
         "tags": ["Notices"],
         "summary": "Notices by favorites",
@@ -354,28 +370,25 @@
             "required": true,
             "type": "string",
             "description": "My favorites"
+          },
+          {
+            "in": "header",
+            "name": "Authorization",
+            "required": true,
+            "type": "string",
+            "description": "The token issued to the current user"
           }
          
         ],
         "security": [{ "Bearer": [] }],
-        "requestBody": {
-          "description": "Favorite notices",
-          "required": true,
-          "content": {
-            "multipart/form-data": {
-              "schema": {
-                "$ref": "#/components/schemas/FavoritesRequest"
-              }
-            }
-          }
-        },
+        
          "responses": {
           "200": {
             "description": "Successful operation, notices found",
             "content": {
               "multipart/form-data": {
                 "schema": {
-                  "$ref": "#/components/schemas/FavoritesResponse"
+                  "$ref": "#/components/schemas/NoticesResponse"
                 }
               }
             }
@@ -394,9 +407,10 @@
             "content": {}
           }
         }
-       
+      }
       },
 
+      "/api/notices/favorites/{id}": {
        "post": {
         "tags": ["Notices"],
         "summary": "Notices by favorites",
@@ -407,6 +421,13 @@
             "required": true,
             "type": "string",
             "description": "Added to favorites"
+          },
+          {
+            "in": "header",
+            "name": "Authorization",
+            "required": true,
+            "type": "string",
+            "description": "The token issued to the current user"
           }
          
         ],
@@ -417,14 +438,14 @@
           "content": {
             "multipart/form-data": {
               "schema": {
-                "$ref": "#/components/schemas/FavoritesRequest"
+                "$ref": "#/components/schemas/NoticeRequest"
               }
             }
           }
         },
          "responses": {
           "200": {
-            "description": "Successful operation, notices found",
+            "description": "Successful operation, notices added to favorite",
             "content": {
               "multipart/form-data": {
                 "schema": {
@@ -966,7 +987,7 @@
               "description": "User's email",
               "format": "email"
             },
-             "": {
+             "token": {
               "type": "string",
               "description": "Token",
               "example": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2M2RjMWIzMjY5NmNjZDA0YzE0MjhhY2EiLCJpYXQiOjE2NzUzNjkyNjh9.B9UOnejWYaaLIiT_E1LQ1NLFHW_QCdc14krYKIFSRho"
@@ -1234,7 +1255,7 @@
               "type": "integer",
 
               "description": "Price",
-              "example": "5000"
+              "example": "500$"
             },
             "categoryName": {
               "type": "string",
@@ -1246,44 +1267,9 @@
 
           }
         }
-      },
-
-      "FavoritesRequest": {
-        "type": "object",
-        "required": ["email", "password"],
-        "properties": {
-          "email": {
-            "type": "string",
-            "description": "User's email",
-            "format": "email"
-          },
-          "password": {
-            "type": "string",
-            "description": "User's password",
-            "example": "qwerty123"
-          }
-        }
-      },
-      "FavoritesResponse": {
-        "type": "object",
-       
-          "properties": {
-
-              "email": {
-              "type": "string",
-              "description": "User's email",
-              "format": "email"
-            },
-             "token": {
-              "type": "string",
-              "description": "Token",
-              "example": "ghfg5678ihjk.dftgy6789ohjik.4567fgyhjknjvc"
-            }
-          
-        },
-        "example": 
-          {"email": "1@gmail.com",  "token": "ghfg5678ihjk.dftgy6789ohjik.4567fgyhjknjvc"}
       }
+
+  
 
 
 
