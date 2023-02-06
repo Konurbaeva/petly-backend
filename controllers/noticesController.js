@@ -61,21 +61,39 @@ const deleteMyNotice = async (req, res) => {
   return res.status(200).json({ message: "Notice deleted" });
 };
 
+// const getNoticesByCategory = async (req, res) => {
+//   const { categoryName } = req.params;
+//   const { query } = req.query;
+//   const options =
+//     query === undefined
+//       ? { categoryName }
+//       : { categoryName, $text: { $search: query } };
+//   const result = await Notices.find(options);
+
+//   if (!result) {
+//     throw RequestError(404, "Not found");
+//   }
+//   return res.status(200).json(result);
+// };
 const getNoticesByCategory = async (req, res) => {
   const { categoryName } = req.params;
-  const { query } = req.query;
+  const { page = 1, limit=20, query } = req.query;
+ 
+  
+
   const options =
     query === undefined
       ? { categoryName }
       : { categoryName, $text: { $search: query } };
-  const result = await Notices.find(options);
+  
+  const skip = (page - 1) * limit;
+  const result = await Notices.find(options, skip, Number(limit));
 
   if (!result) {
     throw RequestError(404, "Not found");
   }
   return res.status(200).json(result);
 };
-
 const addToFavorites = async (req, res) => {
   const { _id: userId } = req.user;
   const { id: noticeId } = req.params;
