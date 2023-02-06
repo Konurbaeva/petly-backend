@@ -70,7 +70,7 @@ const noticeValidateSchema = Joi.object({
   comments: Joi.string().min(8).max(120).allow(null, ''),
   categoryName: Joi.string().valid("sell", "lost-found", "for-free"),
   sex: Joi.string().valid("male", "female"),
-  price: Joi.number().allow(null, ''),
+  price: Joi.allow(null, ''),
   photo: Joi.allow(null, ''),
 });
 
