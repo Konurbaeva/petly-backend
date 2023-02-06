@@ -9,13 +9,16 @@ const RequestError = require('../helpers/RequestError');
 const { User } = require('../models/userModel');
 
 const registerController = async (req, res) => {
-    const { email } = req.body;
-    if(await User.findOne({email})) {
+    const { email: reqEmail } = req.body;
+    
+    if(await User.findOne({email:reqEmail})) {
         throw RequestError(409, "This email is already in use")
     }
+
     const user = new User(req.body);
     await user.save();
-    return res.status(201).json(user);
+    const { email, name, address, phone } = user;
+    return res.status(201).json({ email, name, address, phone });
 }
 
 const loginController = async (req, res) => {
@@ -39,7 +42,7 @@ const loginController = async (req, res) => {
 
 const getCurrentController = async (req, res) => {
     const {_id} = req.user;
-    const user = await User.findById(_id).populate("pets", "_id name birthday breed photo comments");
+    const user = await User.findById(_id, { password: 0, token: 0, createdAt: 0, updatedAt: 0}).populate("pets", "_id name birthday breed photo comments");
     return res.status(200).json(user);
 }
 const logoutController = async (req, res) => {

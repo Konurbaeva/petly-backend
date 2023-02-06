@@ -22,8 +22,6 @@ const addNotice = async (req, res) => {
   const notice = new Notices({... req.body, photo: noticeImgURL, owner: userID});
   await notice.save();
 
-  // const database = client.db("db-testDB");
-  // console.log(database);
   // await Notices.createIndex({ title: "text" });
   return res.status(201).json(notice);
 };
@@ -61,20 +59,6 @@ const deleteMyNotice = async (req, res) => {
   return res.status(200).json({ message: "Notice deleted" });
 };
 
-// const getNoticesByCategory = async (req, res) => {
-//   const { categoryName } = req.params;
-//   const { query } = req.query;
-//   const options =
-//     query === undefined
-//       ? { categoryName }
-//       : { categoryName, $text: { $search: query } };
-//   const result = await Notices.find(options);
-
-//   if (!result) {
-//     throw RequestError(404, "Not found");
-//   }
-//   return res.status(200).json(result);
-// };
 const getNoticesByCategory = async (req, res) => {
   const { categoryName } = req.params;
   const { page = 1, limit=20, query } = req.query;
@@ -85,15 +69,18 @@ const getNoticesByCategory = async (req, res) => {
       ? { categoryName }
       : { categoryName, $text: { $search: query } };
   
-  // console.log(options);
+
   const skip = (page - 1) * limit;
+
+    // temporary solution. Need refactor
+  const allNoticeFoundByOptions = await Notices.find(options);
 
   const result = await Notices.find(options).skip(skip).limit(limit);
 
   if (!result) {
     throw RequestError(404, "Not found");
   }
-  return res.status(200).json(result);
+  return res.status(200).json({ "total": allNoticeFoundByOptions.length, "result":result });
 };
 const addToFavorites = async (req, res) => {
   const { _id: userId } = req.user;
