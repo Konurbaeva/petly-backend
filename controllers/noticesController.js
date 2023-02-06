@@ -79,15 +79,16 @@ const getNoticesByCategory = async (req, res) => {
   const { categoryName } = req.params;
   const { page = 1, limit=20, query } = req.query;
  
-  
 
   const options =
     query === undefined
       ? { categoryName }
       : { categoryName, $text: { $search: query } };
   
+  // console.log(options);
   const skip = (page - 1) * limit;
-  const result = await Notices.find(options, skip, Number(limit));
+
+  const result = await Notices.find(options).skip(skip).limit(limit);
 
   if (!result) {
     throw RequestError(404, "Not found");
