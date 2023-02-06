@@ -36,7 +36,7 @@ router.get("/category/:categoryName", asyncWrapper(getNoticesByCategory));
 router.patch("/favorites/:id", authMiddleware, asyncWrapper(addToFavorites));
 
 // create an endpoint to delete the ad of the authorized user added by the same to the favorites
-router.delete("/favorites/:id", authMiddleware, asyncWrapper(removeFromFavorites));
+router.put("/favorites/:id", authMiddleware, asyncWrapper(removeFromFavorites));
 
 // create an endpoint to receive ads of an authorized user created by the same user
 router.get("/favorites/all", authMiddleware, asyncWrapper(getFavoriteNotices));
