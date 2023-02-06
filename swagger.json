@@ -10,7 +10,7 @@
     }
   },
   "consumes": ["application/json", "multipart/form-data"],
-  "produces": ["application/json", "multipart/form-data"],
+  "produces": ["application/json"],
   "servers": [{ "url": "https://goit-project-petly-backend.onrender.com" }],
   "tags": [
      {
@@ -82,12 +82,9 @@
             "content": {}
           }
         }
-       
-      }
-      
-      
-      
+      }   
     },
+
     "/api/users/login": {
       "post": {
         "tags": ["User"],
@@ -125,16 +122,22 @@
             "content": {}
           }
         }
-       
-      }
-      
-      
+      } 
     },
+
     "/api/users/update": {
       "patch": {
         "tags": ["User"],
         "summary": "Update an existing user",
-        "parameters": [],
+        "parameters": [ 
+          {
+             "in": "header",
+            "name": "Authorization",
+            "required": true,
+            "type": "string",
+            "description": "The token issued to the current user"
+          }
+        ],
         "security": [{ "Bearer": [] }],
         "requestBody": {
           "description": "User's object",
@@ -151,7 +154,7 @@
           "200": {
             "description": "The user was successfully updated",
             "content": {
-              "multipart/form-data": {
+              "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/UpdateResponse"
                 }
@@ -170,12 +173,10 @@
             "description": "Server error",
             "content": {}
           }
-        }
-       
-      }
-      
-      
+        } 
+      } 
     },
+
     "/api/users/logout": {
       "get": {
         "tags": ["User"],
@@ -190,7 +191,6 @@
           }
         ],
         "security": [{ "Bearer": [] }],
-        
         "responses": {
           "200": {
             "description": "The user is logged out",
@@ -205,18 +205,14 @@
             "content": {}
           }
         }
-       
-      }
-      
-      
-      
+      } 
     },
+
     "/api/news": {
       "get": {
         "tags": ["News"],
         "summary": "Get all news",
         "parameters": [],
-        
         "responses": {
           "200": {
             "description": "A list of news",
@@ -233,24 +229,20 @@
             "content": {}
           }
         }
-       
-      }
-      
-      
-      
+      }  
     },
+
     "/api/services": {
       "get": {
         "tags": ["Services-sidebar"],
         "summary": "Get all partners",
         "parameters": [],
         "security": [{ "Bearer": [] }],
-       
-        "responses": {
+       "responses": {
           "200": {
             "description": "Ok, Successful operation",
             "content": {
-              "multipart/form-data": {
+              "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/ServicesResponse"
                 }
@@ -262,15 +254,13 @@
             "content": {}
           }
         }
-       
-      }
-       
-      
+      } 
     },
+
     "api/users/current": {
       "get": {
         "tags": ["User"],
-        "summary": "Get information about the current user",
+        "summary": "Get information about the pet's user",
         "parameters": [
             {
             "in": "header",
@@ -281,26 +271,26 @@
           }
         ],
         "security": [{ "Bearer": [] }],
-        
         "responses": {
           "200": {
-            "description": "Information found"
-           
-          },
+            "description": "Information about pets found",
+             "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UserPetsResponse"
+                }
+              }
+            }
+           },
           "401": {
             "description": "Missing header with authorization token",
             "content": {}
           }
-        
         }
-       
-      }
-      
-      
-      
-    },
+       }
+      },
     
-        "/api/notices/category/{categoryName}": {
+     "/api/notices/category/{categoryName}": {
       "get": {
         "tags": ["Notices"],
         "summary": "Notices by category",
@@ -308,27 +298,23 @@
           {
             "in": "path",
             "name": "categoryName",
-            
             "type": "string",
             "description": "Name of category"
           }
-         
-        ],
+         ],
         "security": [{ "Bearer": [] }],
-        
         "responses": {
           "200": {
             "description": "Successful operation, notices found",
             "content": {
-              "multipart/form-data": {
+              "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/NoticesResponse"
                 }
               }
             }
           },
-
-          "404": {
+           "404": {
             "description": "There is no such category.",
             "content": {}
           },
@@ -337,56 +323,40 @@
             "content": {}
           }
         }
-       
-      }
-      
-      
-      
-    },
-     "/api/notices/favorites/{id}": {
+       }
+      },
+
+     "/api/notices": {
       "get": {
         "tags": ["Notices"],
-        "summary": "Notices by favorites",
+        "summary": "My notices",
         "parameters": [
-          {
-            "in": "path",
-            "name": "id",
+         {
+            "in": "header",
+            "name": "Authorization",
             "required": true,
             "type": "string",
-            "description": "My favorites"
+            "description": "The token issued to the current user"
           }
-         
-        ],
+         ],
         "security": [{ "Bearer": [] }],
-        "requestBody": {
-          "description": "Favorite notices",
-          "required": true,
-          "content": {
-            "multipart/form-data": {
-              "schema": {
-                "$ref": "#/components/schemas/FavoritesRequest"
-              }
-            }
-          }
-        },
-         "responses": {
+        "responses": {
           "200": {
             "description": "Successful operation, notices found",
             "content": {
-              "multipart/form-data": {
+              "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/FavoritesResponse"
+                  "$ref": "#/components/schemas/NoticesResponse"
                 }
               }
             }
           },
-          "400": {
-            "description": "Bad request",
+          "401": {
+            "description": "Missing header with authorization token",
             "content": {}
           },
-
           "404": {
-            "description": "Nothing found",
+            "description": "Notices not found",
             "content": {}
           },
            "500": {
@@ -394,52 +364,49 @@
             "content": {}
           }
         }
-       
       },
-
-       "post": {
+        
+      "post": {
         "tags": ["Notices"],
-        "summary": "Notices by favorites",
+        "summary": "Create my notices",
         "parameters": [
-          {
-            "in": "path",
-            "name": "id",
+         {
+            "in": "header",
+            "name": "Authorization",
             "required": true,
             "type": "string",
-            "description": "Added to favorites"
+            "description": "The token issued to the current user"
           }
-         
-        ],
+         ],
         "security": [{ "Bearer": [] }],
-        "requestBody": {
-          "description": "Favorite notices",
+         "requestBody": {
+          "description": "New notice",
           "required": true,
           "content": {
-            "multipart/form-data": {
+            "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/FavoritesRequest"
+                "$ref": "#/components/schemas/NoticesRequest"
               }
             }
           }
         },
-         "responses": {
-          "200": {
-            "description": "Successful operation, notices found",
+        "responses": {
+          "201": {
+            "description": "The notice was successfully created.",
             "content": {
-              "multipart/form-data": {
+              "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/FavoritesResponse"
+                  "$ref": "#/components/schemas/NoticesResponse"
                 }
               }
             }
           },
-          "400": {
-            "description": "Bad request",
+        "400": {
+            "description": "Error creating notice",
             "content": {}
           },
-
-          "404": {
-            "description": "Nothing found",
+        "401": {
+            "description": "Missing header with authorization token",
             "content": {}
           },
            "500": {
@@ -447,12 +414,55 @@
             "content": {}
           }
         }
-       
+      }
       },
+
+      "/api/notices/favorites/{id}": {
+       "patch": {
+        "tags": ["Notices"],
+        "summary": "Add notice to favorites",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "type": "string",
+            "description": "Add to favorites"
+          },
+          {
+            "in": "header",
+            "name": "Authorization",
+            "required": true,
+            "type": "string",
+            "description": "The token issued to the current user"
+          } 
+        ],
+        "security": [{ "Bearer": [] }],
+        "responses": {
+          "200": {
+            "description": "Successful operation, notice added to favorite",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/NoticesResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Notice not found",
+            "content": {}
+          },
+           "500": {
+            "description": "Server error",
+            "content": {}
+          }
+        }
+       },
 
        "delete": {
         "tags": ["Notices"],
-        "summary": "Notices by favorites",
+        "summary": "Remove from favorites",
         "parameters": [
           {
             "in": "path",
@@ -460,37 +470,25 @@
             "required": true,
             "type": "string",
             "description": "Remove from favorites"
+          },
+          {
+            "in": "header",
+            "name": "Authorization",
+            "required": true,
+            "type": "string",
+            "description": "The token issued to the current user"
           }
-         
         ],
         "security": [{ "Bearer": [] }],
-        "requestBody": {
-          "description": "Favorite notices",
-          "required": true,
-          "content": {
-            "multipart/form-data": {
-              "schema": {
-                "$ref": "#/components/schemas/FavoritesRequest"
-              }
-            }
-          }
-        },
-         "responses": {
+       "responses": {
           "200": {
-            "description": "Successful operation, notices found",
-            "content": {
-              "multipart/form-data": {
-                "schema": {
-                  "$ref": "#/components/schemas/FavoritesResponse"
-                }
-              }
-            }
-          },
-          "400": {
-            "description": "Bad request",
+            "description": "Notice removed from favorites",
             "content": {}
           },
-
+          "401": {
+            "description": "Missing header with authorization token",
+            "content": {}
+          },
           "404": {
             "description": "Nothing found",
             "content": {}
@@ -500,17 +498,13 @@
             "content": {}
           }
         }
-       
-      }
-      
-      
-      
-    },
+       }
+      },
 
     "/api/notices/{id}": {
       "get": {
         "tags": ["Notices"],
-        "summary": "Notices by id",
+        "summary": "Get one notice",
         "parameters": [
           {
             "in": "path",
@@ -519,36 +513,19 @@
             "type": "string",
             "description": "Search by id"
           }
-         
-        ],
+         ],
         "security": [{ "Bearer": [] }],
-        "requestBody": {
-          "description": "Search by",
-          "required": true,
-          "content": {
-            "multipart/form-data": {
-              "schema": {
-                "$ref": "#/components/schemas/FavoritesRequest"
-              }
-            }
-          }
-        },
-         "responses": {
+        "responses": {
           "200": {
-            "description": "Successful operation, notices found",
+            "description": "Successful operation, notice found",
             "content": {
-              "multipart/form-data": {
+              "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/FavoritesResponse"
+                  "$ref": "#/components/schemas/NoticesResponse"
                 }
               }
             }
           },
-          "400": {
-            "description": "Bad request",
-            "content": {}
-          },
-
           "404": {
             "description": "Nothing found",
             "content": {}
@@ -558,56 +535,39 @@
             "content": {}
           }
         }
-       
-      }
-      
-      
-      
-    },
+       },
 
-    "/api/notices/": {
-      "get": {
+      "delete": {
         "tags": ["Notices"],
-        "summary": "My notices",
+        "summary": "Delete my notice",
         "parameters": [
-           {
+          {
             "in": "path",
-            "name": "userId",
+            "name": "id",
             "required": true,
             "type": "string",
-            "description": "User ID"
-            },
-
-
-           {
-             
+            "description": "Search by id"
+          },
+          {
             "in": "header",
             "name": "Authorization",
             "required": true,
             "type": "string",
             "description": "The token issued to the current user"
           }
-        ],
+         ],
         "security": [{ "Bearer": [] }],
-        "requestBody": {},
         "responses": {
           "200": {
-            "description": "Successful operation, notices found",
-            "content": {
-              "multipart/form-data": {
-                "schema": {
-                  "$ref": "#/components/schemas/NoticesResponse"
-                }
-              }
-            }
-          },
-          "400": {
-            "description": "Bad request",
+            "description": "Successful operation, This notice deleted",
             "content": {}
           },
-
+          "401": {
+            "description": "Missing header with authorization token.",
+            "content": {}
+          },
           "404": {
-            "description": "There is no such category.",
+            "description": "Notice not found",
             "content": {}
           },
            "500": {
@@ -615,149 +575,57 @@
             "content": {}
           }
         }
-       
+       }
+       },
+
+    "/api/notices/favorites/all": {
+      "get": {
+        "tags": ["Notices"],
+        "summary": "My favorites notices",
+        "parameters": [
+          {
+              "in": "header",
+            "name": "Authorization",
+            "required": true,
+            "type": "string",
+            "description": "The token issued to the current user"
+          }
+        ],
+        "security": [{ "Bearer": [] }],
+       "responses": {
+          "200": {
+            "description": "Successful operation, notices found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/NoticesResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Missing header with authorization token",
+            "content": {}
+          },
+          "404": {
+            "description": "Favorites not found",
+            "content": {}
+          },
+           "500": {
+            "description": "Server error",
+            "content": {}
+          }
+        }
+       }
       },
-      
-        "delete": {
-        "tags": ["Notices"],
-        "summary": "My notices",
-        "parameters": [
-           {
-            "in": "path",
-            "name": "userId",
-            "required": true,
-            "type": "string",
-            "description": "User ID"
-            },
 
-
-           {
-             
-            "in": "header",
-            "name": "Authorization",
-            "required": true,
-            "type": "string",
-            "description": "The token issued to the current user"
-          }
-        ],
-        "security": [{ "Bearer": [] }],
-        "requestBody": {},
-        "responses": {
-          "200": {
-            "description": "Successful operation, notices found",
-            "content": {
-              "multipart/form-data": {
-                "schema": {
-                  "$ref": "#/components/schemas/NoticesResponse"
-                }
-              }
-            }
-          },
-          "400": {
-            "description": "Bad request",
-            "content": {}
-          },
-
-          "404": {
-            "description": "There is no such category.",
-            "content": {}
-          },
-           "500": {
-            "description": "Server error",
-            "content": {}
-          }
-        }
-       
-      }
-      
-      
-      
-    },
-
-    "/api/notices/myNotice": {
-      "get": {
-        "tags": ["Notices"],
-        "summary": "My notices ",
-        "parameters": [
-           {
-            "in": "path",
-            "name": "userId",
-            "required": true,
-            "type": "string",
-            "description": "User ID"
-            },
-
-
-           {
-             
-            "in": "header",
-            "name": "Authorization",
-            "required": true,
-            "type": "string",
-            "description": "The token issued to the current user"
-          }
-         
-        ],
-        "security": [{ "Bearer": [] }],
-        "requestBody": {
-          "description": "My notices",
-          "required": true,
-          "content": {
-            "multipart/form-data": {
-              "schema": {
-                "$ref": "#/components/schemas/FavoritesRequest"
-              }
-            }
-          }
-        },
-         "responses": {
-          "200": {
-            "description": "Successful operation, notices found",
-            "content": {
-              "multipart/form-data": {
-                "schema": {
-                  "$ref": "#/components/schemas/FavoritesResponse"
-                }
-              }
-            }
-          },
-          "400": {
-            "description": "Bad request",
-            "content": {}
-          },
-
-          "404": {
-            "description": "Nothing found",
-            "content": {}
-          },
-           "500": {
-            "description": "Server error",
-            "content": {}
-          }
-        }
-       
-      }
-      
-      
-      
-    },
      "/api/pets": {
       "post": {
         "tags": ["Pets"],
         "summary": "Create a new pet",
         "parameters": [
-          {
-            "in": "path",
-            "name": "userId",
-            "required": true,
-            "type": "string",
-            "description": "User ID"
-            },
-
-
-           {
-             
-            "in": "header",
+        {
+             "in": "header",
             "name": "Authorization",
             "required": true,
             "type": "string",
@@ -769,9 +637,9 @@
           "description": "New pet",
           "required": true,
           "content": {
-            "application/json": {
+            "multipart/form-data": {
               "schema": {
-                "$ref": "#/components/schemas/RegistrationRequest"
+                "$ref": "#/components/schemas/UserPetsRequest"
               }
             }
           }
@@ -782,17 +650,17 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/RegistrationResponse"
+                  "$ref": "#/components/schemas/UserPetsResponse"
                 }
               }
             }
           },
-          "400": {
-            "description": "Bad request (invalid request body)",
+        "400": {
+            "description": "Error creating pet",
             "content": {}
           },
-          "409": {
-            "description": "this pet already exists",
+        "401": {
+            "description": "Missing header with authorization token",
             "content": {}
           },
            "500": {
@@ -800,30 +668,23 @@
             "content": {}
           }
         }
-       
-      }
-      
-      
-      
-    },
+       }
+      },
 
-    "/api/pets/{:id}": {
+    "/api/pets/{id}": {
       "delete": {
         "tags": ["Pets"],
-        "summary": "delete this card",
+        "summary": "delete this pet",
         "parameters": [
           {
             "in": "path",
-            "name": "userId",
+            "name": "petId",
             "required": true,
             "type": "string",
-            "description": "User ID"
+            "description": "Delete by id"
             },
-
-
-           {
-             
-            "in": "header",
+            {
+             "in": "header",
             "name": "Authorization",
             "required": true,
             "type": "string",
@@ -831,27 +692,10 @@
           }
         ],
         "security": [{ "Bearer": [] }],
-        "requestBody": {
-          "description": "remove pet",
-          "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/RegistrationRequest"
-              }
-            }
-          }
-        },
-        "responses": {
+       "responses": {
           "200": {
             "description": "The pet was deleted.",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/RegistrationResponse"
-                }
-              }
-            }
+            "content": {}
           },
           "401": {
             "description": "Missing header with authorization token",
@@ -866,25 +710,21 @@
             "content": {}
           }
         }
-       
+       }
       }
-      
-      
-      
-    }
-    
+    },
 
-    
-  },
-
-
-  
-  "components": {
+"components": {
     "schemas": {
       "RegistrationRequest": {
         "type": "object",
         "required": ["email", "password"],
         "properties": {
+          "name": {
+            "type": "string",
+            "description": "User's name",
+            "example": "Natalia"
+          },
           "email": {
             "type": "string",
             "description": "User's email",
@@ -894,14 +734,8 @@
             "type": "string",
             "description": "User's password",
             "example": "qwerty123"
-          },
-          "name": {
-            "type": "string",
-            "description": "User's name",
-            "example": "Natalia"
           }
-          
-        }
+          }
       },
       "RegistrationResponse": {
         "type": "array",
@@ -914,7 +748,6 @@
               "description": "User's id",
               "example": "63d7b0dfh78956072a3ad82e88"
             },
-
              "name": {
               "type": "string",
               "description": "User's name",
@@ -924,26 +757,16 @@
               "type": "string",
               "description": "User's email",
               "format": "email"
-            },
-             "token": {
-              "type": "string",
-              "description": "Token",
-              "example": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2M2RjMWIzMjY5NmNjZDA0YzE0MjhhY2EiLCJpYXQiOjE2NzUzNjkyNjh9.B9UOnejWYaaLIiT_E1LQ1NLFHW_QCdc14krYKIFSRho"
             }
-            
-            
-          }
-        },
-        "example": [
-          { "userId": "1", "name": "Natalia", "email": "1@gmail.com", "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2M2RjMWIzMjY5NmNjZDA0YzE0MjhhY2EiLCJpYXQiOjE2NzUzNjkyNjh9.B9UOnejWYaaLIiT_E1LQ1NLFHW_QCdc14krYKIFSRho" },
-          { "userId": "2", "name": "Andriy", "email": "2@gmail.com", "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2M2RjMTYyZWMxZDc5ZWZjYTYwNDc5NzUiLCJpYXQiOjE2NzUzNjgxNjR9.Dq7CNmVyaaCcZJ41vo2D4po3vQTNwyXT_ylcsWC5oFE" }
-        ]
-      },
+            }
+        }
+       },
 
 "LoginRequest": {
         "type": "object",
         "required": ["email", "password"],
         "properties": {
+
           "email": {
             "type": "string",
             "description": "User's email",
@@ -958,31 +781,29 @@
       },
       "LoginResponse": {
         "type": "object",
-       
-          "properties": {
+       "properties": {
 
               "email": {
               "type": "string",
               "description": "User's email",
               "format": "email"
             },
-             "": {
+             "token": {
               "type": "string",
-              "description": "Token",
-              "example": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2M2RjMWIzMjY5NmNjZDA0YzE0MjhhY2EiLCJpYXQiOjE2NzUzNjkyNjh9.B9UOnejWYaaLIiT_E1LQ1NLFHW_QCdc14krYKIFSRho"
-            }
-          
-        }
-       
-      },
-
-     
+              "description": "Token"
+              }
+          }
+       },
 
           "UpdateRequest": {
         "type": "object",
-        
         "properties": {
-          
+
+           "name": {
+            "type": "string",
+            "description": "User's name",
+            "example": "Natalia"
+          },
           "email": {
             "type": "string",
             "description": "User's email",
@@ -993,12 +814,7 @@
             "description": "User's password",
             "example": "qwerty123"
           },
-          "name": {
-            "type": "string",
-            "description": "User's name",
-            "example": "Natalia"
-          },
-          "address": {
+         "address": {
             "type": "string",
             "description": "User's adress",
             "example": "Kyiv, Konovaltsa street"
@@ -1019,13 +835,13 @@
               "description": "Avatar",
               "format": "binary"
             }
-          
-        }
+          }
       },
+
       "UpdateResponse": {
-        
-          "type": "object",
+        "type": "object",
           "properties": {
+
           "userId": {
               "type": "string",
               "description": "User's id",
@@ -1036,8 +852,7 @@
             "description": "User's email",
             "format": "email"
           },
-         
-          "name": {
+         "name": {
             "type": "string",
             "description": "User's name",
             "example": "Natalia"
@@ -1064,12 +879,8 @@
               "format": "binary",
               "example": "https://res.cloudinary.com/dr525ee18/image/upload/v1675106400/partners/frame_287_sukix5.png"
             }
-      
-          
-          }
+      }
         },
-
-        
 
       "NewsResponse": {
          "type": "array",
@@ -1095,8 +906,7 @@
              "description": {
               "type": "string",
               "description": "Aricle"
-              
-            },
+              },
               "date": {
               "type": "string",
               "description": "date",
@@ -1137,42 +947,14 @@
               "description": "imageUrl",
               "example": "https://res.cloudinary.com/dr525ee18/image/upload/v1675106400/partners/frame_287_sukix5.png"
             },
-            
-             "address": {
+            "address": {
               "type": "string",
               "description": "address",
               "example": "Fedorivka, Kyiv Oblast, Ukraine, 07372"
             },
-            " workDays": {
+            "workDays": {
               "type": "Array",
-              "description": " workDays",
-              "example": [
-            {
-                "isOpen": false
-            },
-            {
-                "isOpen": false
-            },
-            {
-                "isOpen": false
-            },
-            {
-                "isOpen": false
-            },
-            {
-                "isOpen": false
-            },
-            {
-                "isOpen": true,
-                "from": "11:00",
-                "to": "16:00"
-            },
-            {
-                "isOpen": true,
-                "from": "11:00",
-                "to": "16:00"
-            }
-        ]
+              "description": " workDays"
             },
              "phone": {
             "type": "string",
@@ -1188,7 +970,38 @@
         }
       },
 
-      "NoticesResponse": {
+      "UserPetsRequest": {
+        "type": "object",
+        "required": ["name", "birthdate", "breed", "photo"],
+        "properties": {
+          "name": {
+            "type": "string",
+            "description": "Pet's name",
+            "example": "Teo"
+          },
+          "birthdate": {
+             "type": "string",
+              "description": "Date of birth",
+              "example": "25-02-2022"
+          },
+          "breed": {
+            "type": "string",
+              "description": "breed",
+              "example": "Exot"
+          },
+            "photo": {
+              "type": "string",
+              "description": "Photo",
+               "format": "binary"
+              },
+              "comments": {
+              "type": "string",
+              "description": "Comments"
+              }
+        }
+      },
+
+            "UserPetsResponse": {
          "type": "array",
         "items": {
           "type": "object",
@@ -1199,18 +1012,45 @@
               "description": "id",
               "example": "63d7b0396656072a3ad82e88"
             },
-             "title": {
+             "name": {
               "type": "string",
-              "description": "User's name",
-              "example": "Title"
+              "description": "Name",
+              "example": "Teo"
             },
+             "birthdate": {
+              "type": "string",
+              "description": "Date of birth",
+              "example": "25-02-2022"
+            },
+             "breed": {
+              "type": "string",
+              "description": "breed",
+              "example": "Exot"
+            },
+            "photo": {
+              "type": "string",
+              "description": "Photo",
+              "example": "https://res.cloudinary.com/dr525ee18/image/upload/v1675106400/partners/frame_287_sukix5.png"
+            },
+              "comments": {
+              "type": "string",
+              "description": "Comments"
+            }
+          }
+        }
+      },
+
+       "NoticesRequest": {
+        "type": "object",
+        "required": ["name", "birthdate", "breed"],
+        "properties": {
+
               "name": {
               "type": "string",
               "description": "Name",
               "example": "Teo"
             },
-             
-              "birthdate": {
+             "birthdate": {
               "type": "string",
               "description": "date",
               "example": "25-02-2022"
@@ -1227,12 +1067,10 @@
             },
              "comments": {
               "type": "string",
-              "description": "Comments",
-              "example": "A little cat"
+              "description": "Comments"
             },
              "price": {
               "type": "integer",
-
               "description": "Price",
               "example": "5000"
             },
@@ -1242,51 +1080,58 @@
               "description": "categoryName",
               "example": "lost-found"
             }
-            
-
           }
-        }
       },
 
-      "FavoritesRequest": {
-        "type": "object",
-        "required": ["email", "password"],
-        "properties": {
-          "email": {
-            "type": "string",
-            "description": "User's email",
-            "format": "email"
-          },
-          "password": {
-            "type": "string",
-            "description": "User's password",
-            "example": "qwerty123"
-          }
-        }
-      },
-      "FavoritesResponse": {
-        "type": "object",
-       
+      "NoticesResponse": {
+         "type": "array",
+        "items": {
+          "type": "object",
           "properties": {
 
-              "email": {
+            "id": {
               "type": "string",
-              "description": "User's email",
-              "format": "email"
+              "description": "id",
+              "example": "63d7b0396656072a3ad82e88"
             },
-             "token": {
+             "name": {
               "type": "string",
-              "description": "Token",
-              "example": "ghfg5678ihjk.dftgy6789ohjik.4567fgyhjknjvc"
+              "description": "Name",
+              "example": "Teo"
+            },
+             "birthdate": {
+              "type": "string",
+              "description": "date",
+              "example": "25-02-2022"
+            },
+             "breed": {
+              "type": "string",
+              "description": "breed",
+              "example": "Exot"
+            },
+             "location": {
+              "type": "string",
+              "description": "Location",
+              "example": "Fedorivka, Kyiv Oblast, Ukraine, 07372"
+            },
+             "comments": {
+              "type": "string",
+              "description": "Comments"
+            },
+             "price": {
+              "type": "integer",
+              "description": "Price",
+              "example": "5000"
+            },
+            "categoryName": {
+              "type": "string",
+              "enum": ["sell", "lost-found", "for-free"],
+              "description": "categoryName",
+              "example": "lost-found"
             }
-          
-        },
-        "example": 
-          {"email": "1@gmail.com",  "token": "ghfg5678ihjk.dftgy6789ohjik.4567fgyhjknjvc"}
+          }
+        }
       }
-
-
-
     },
 
     
