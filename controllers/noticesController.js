@@ -75,7 +75,11 @@ const getNoticesByCategory = async (req, res) => {
     // temporary solution. Need refactor
   const allNoticeFoundByOptions = await Notices.find(options);
 
-  const result = await Notices.find(options).skip(skip).limit(limit);
+  // sorting
+  // const sort = {'timestamp': -1}
+  const sorting = [['_id', -1]];
+
+  const result = await Notices.find(options).sort(sorting).skip(skip).limit(limit);
 
   if (!result) {
     throw RequestError(404, "Not found");
