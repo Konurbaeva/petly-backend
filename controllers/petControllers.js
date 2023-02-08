@@ -12,11 +12,18 @@ const createPetController = async (req, res) => {
 
     if (req.file) {
         const { path: tempUpload, originalname } = req.file;
-        const filename = `${userID}_${originalname}`
-        const result = await cloudinary.uploader.upload(tempUpload, { public_id: filename }, function (error, result) { });
-        const { secure_url } = result;
+        //    temporary solution
+        const imgName = originalname.split('.')[0]
+
+        const filename = `${userID}_${imgName}`
+        const result = await cloudinary.uploader.upload(tempUpload, { public_id: filename }, function (error, result) {
+         });
+        const { secure_url, public_id } = result;
+        // console.log(result);
         await fs.unlink(tempUpload);
-        petImgURL = secure_url;
+        // petImgURL = secure_url;
+        petImgURL = cloudinary.url(public_id, {quality: "auto:eco"});
+        // console.log(petImgURL);
     }
     const pet = new Pet({ ...req.body, photo: petImgURL, owner: userID});
     await pet.save();
