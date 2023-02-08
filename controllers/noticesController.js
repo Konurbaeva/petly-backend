@@ -61,7 +61,7 @@ const deleteMyNotice = async (req, res) => {
 
 const getNoticesByCategory = async (req, res) => {
   const { categoryName } = req.params;
-  const { page = 1, limit=20, query } = req.query;
+  const { page = 1, limit = 12, query } = req.query;
  
 
   const options =
