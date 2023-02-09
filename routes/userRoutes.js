@@ -7,7 +7,10 @@ const { asyncWrapper } = require('../helpers/apiHelpers');
 const validateBody = require('../middlewares/validateBody');
 const { upload } = require('../middlewares/upload')
 const {schemas} = require('../models/userModel')
+const { passport } = require("../middlewares")
 
+
+router.get("/google", passport.authenticate("google"));
 
 router.post('/register', validateBody(schemas.registerSchema), asyncWrapper(registerController));
 router.post('/login', validateBody(schemas.loginSchema), asyncWrapper(loginController));
