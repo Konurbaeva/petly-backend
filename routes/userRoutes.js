@@ -10,7 +10,11 @@ const {schemas} = require('../models/userModel')
 const { passport } = require("../middlewares")
 
 
-router.get("/google", passport.authenticate("google"));
+router.get("/google", passport.authenticate("google", {
+    scope:["email", "profile"]
+}));
+
+router.get("/google/callback", passport.authenticate("google", {session: false}),  asyncWrapper(ctrl.google));
 
 router.post('/register', validateBody(schemas.registerSchema), asyncWrapper(registerController));
 router.post('/login', validateBody(schemas.loginSchema), asyncWrapper(loginController));

@@ -35,7 +35,7 @@ const googleCallback = async(req, accessToken, refreshToken, profile, done) => {
     }
 }
 
-const googleStrategy = new Strategy(params, googleCallback);
+const googleStrategy = new Strategy(googleParams, googleCallback);
 passport.use("google", googleStrategy);
 
 
