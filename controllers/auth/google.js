@@ -5,7 +5,7 @@ const { User } = require("../../models/userModel");
 
 const { SECRETKEY } = process.env;
 
-const google = async(req, res) => {
+const googleController = async(req, res) => {
   const { _id: id} = req.user;
 
   const payload = {
@@ -19,4 +19,4 @@ const google = async(req, res) => {
   res.redirect(`https://kl0filinj.github.io/goit-project-petly?token=${token}`)
 }
 
-module.exports = google;
+module.exports = googleController;
