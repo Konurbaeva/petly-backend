@@ -4,9 +4,12 @@ require('dotenv').config();
 const cloudinary = require('cloudinary').v2;
 const fs = require('fs/promises');
 const Jimp = require('jimp');
+const { v4: uuidv4 } = require('uuid');
 
 const RequestError = require('../helpers/RequestError');
 const { User } = require('../models/userModel');
+const { sendEmail } = require('../services/sendEmail');
+const { recoveryTemplate } = require('../email/emailTemplates');
 
 const registerController = async (req, res) => {
     const { email: reqEmail } = req.body;
@@ -26,11 +29,11 @@ const loginController = async (req, res) => {
     const user = await User.findOne({ email: reqEmail });
     
     if (!user) {
-        throw RequestError(401, 'User with this email not found')
+        throw RequestError(401, 'User with this email not found');
     }
 
     if (!await bcrypt.compare(password, user.password)) {
-        throw RequestError(401, 'Wrong password')
+        throw RequestError(401, 'Wrong password');
     }
 
     const userToken = jwt.sign({ _id: user._id }, process.env.JWT_SECRET);
@@ -83,6 +86,44 @@ const avatarController = async (req, res) => {
 const getStatusController = async (req, res) => { 
     return res.status(200).json({  message: "Information found" });
 }
+
+const recoveryController = async (req, res) => { 
+    const { email } = req.body;
+    const user = await User.findOne({ email });
+    if (!user) {
+        throw RequestError(401, 'User with this email not found');
+    }
+    // check if user is already login ??? another check ??
+    const recoveryToken = uuidv4();
+    const mail = {
+        to: email,
+        subject: "Reset your password",
+        html: recoveryTemplate(recoveryToken)
+    }
+    await sendEmail(mail);
+
+    // update user and set to him recoveryToken
+
+      return res.status(200).json({
+        message: "Reset password link was sent"
+    })
+}
+
+const resetPasswordController = async (req, res) => { 
+    // const { recoveryToken } = req.params;
+    
+    // const user = await User.findOne({recoveryToken});
+    // if (!user) {
+    //      throw RequestError(401, 'User with this email not found');
+    // }
+
+    // bcry[t paassword]
+    // await User.findByIdAndUpdate(user._id, { recoveryToken: "" }, password: passeord);
+
+    // return res.status(200).json({
+    //     message: "Password waschanged successfull"
+    // })
+}
 module.exports = {
-    registerController, loginController, getCurrentController, logoutController, updateController, avatarController, getStatusController
+    registerController, loginController, getCurrentController, logoutController, updateController, avatarController, getStatusController, recoveryController, resetPasswordController
 }
