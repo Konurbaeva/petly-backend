@@ -25,7 +25,7 @@ router.patch('/avatar', authMiddleware, upload.single('avatar'), asyncWrapper(av
 
 
 // forgot and recover password
-// router.post('/recovery', asyncWrapper(recoveryController));
-// router.get('/recovery/:recoveryToken', asyncWrapper(resetPasswordController));
+router.post('/recovery', asyncWrapper(recoveryController));
+router.post('/recovery/:recoveryToken', validateBody(schemas.resetPasswordSchema), asyncWrapper(resetPasswordController));
 
 module.exports = router

@@ -40,6 +40,10 @@ const userSchema = new mongoose.Schema(
       type: String,
       default: null,
     },
+    recoveryToken: {
+      type: String,
+      default: null,
+    },
     pets: [{type: mongoose.Schema.Types.ObjectId, ref: 'Pet'}],
     favorites: [{ type: mongoose.Schema.Types.ObjectId, ref: 'notices' }]
   },
@@ -71,11 +75,16 @@ const updateFieldSchema = Joi.object({
   phone: Joi.string().pattern(phoneRegExp),
   birthday: Joi.string(),
 });
-
+const resetPasswordSchema = Joi.object({
+  password: Joi.string().min(3).required(),
+  repeat_password: Joi.ref('password'),
+  
+});
 const schemas = {
   registerSchema,
   loginSchema,
-  updateFieldSchema
+  updateFieldSchema,
+  resetPasswordSchema
 };
 
 const User = mongoose.model("User", userSchema);

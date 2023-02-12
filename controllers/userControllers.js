@@ -65,8 +65,6 @@ const updateController = async (req, res) => {
 }
 
 const avatarController = async (req, res) => { 
-    // console.log(req.body);
-    // console.log(req.file);
     const { path: tempUpload, originalname } = req.file;
     const { _id } = req.user
     const filename = `${_id}_${originalname}`
@@ -95,34 +93,36 @@ const recoveryController = async (req, res) => {
     }
     // check if user is already login ??? another check ??
     const recoveryToken = uuidv4();
+    await User.findByIdAndUpdate(user._id, { recoveryToken });
+
     const mail = {
         to: email,
         subject: "Reset your password",
         html: recoveryTemplate(recoveryToken)
-    }
+    };
     await sendEmail(mail);
 
-    // update user and set to him recoveryToken
-
-      return res.status(200).json({
-        message: "Reset password link was sent"
+    return res.status(200).json({
+        message: "Reset password link was sent succesfull"
     })
 }
 
 const resetPasswordController = async (req, res) => { 
-    // const { recoveryToken } = req.params;
+    const { recoveryToken } = req.params;
     
-    // const user = await User.findOne({recoveryToken});
-    // if (!user) {
-    //      throw RequestError(401, 'User with this email not found');
-    // }
+    const user = await User.findOne({recoveryToken});
+    if (!user) {
+         throw RequestError(401, 'User not found');
+    }
+    const { password } = req.body;
+    const cryptedPassword = await bcrypt.hash(password, 10);
+    await User.findByIdAndUpdate(user._id, { recoveryToken: "", password: cryptedPassword });
+    // for development
+    // await User.findByIdAndUpdate(user._id, { recoveryToken, password: cryptedPassword });
 
-    // bcry[t paassword]
-    // await User.findByIdAndUpdate(user._id, { recoveryToken: "" }, password: passeord);
-
-    // return res.status(200).json({
-    //     message: "Password waschanged successfull"
-    // })
+    return res.status(200).json({
+        message: "Password was changed successfull"
+    })
 }
 module.exports = {
     registerController, loginController, getCurrentController, logoutController, updateController, avatarController, getStatusController, recoveryController, resetPasswordController
