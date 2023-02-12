@@ -1,12 +1,23 @@
 const express = require('express');
 const router = express.Router();
 
+const googleController = require('../controllers/auth/google');
 const { registerController, loginController, getCurrentController, logoutController, updateController, avatarController, getStatusController, recoveryController, resetPasswordController } = require('../controllers/userControllers');
+
 const { authMiddleware } = require('../middlewares/authMiddleware');
 const { asyncWrapper } = require('../helpers/apiHelpers');
 const validateBody = require('../middlewares/validateBody');
 const { upload } = require('../middlewares/upload')
 const {schemas} = require('../models/userModel')
+const { passport } = require("../middlewares");
+
+
+// контроллер, который перекидывает на гугл
+router.get("/google", passport.authenticate("google", {
+    scope:["email", "profile"]
+}));
+
+router.get("/google/callback", passport.authenticate("google", {session: false}),  asyncWrapper(googleController));
 
 // sign up
 router.post('/register', validateBody(schemas.registerSchema), asyncWrapper(registerController));
