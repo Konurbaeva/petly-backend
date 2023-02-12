@@ -63,13 +63,11 @@ const getNoticesByCategory = async (req, res) => {
   const { categoryName } = req.params;
   const { page = 1, limit = 12, query } = req.query;
  
-
   const options =
-    query === undefined
+    (query === null || query === '' || query === undefined)
       ? { categoryName }
       : { categoryName, $text: { $search: query } };
   
-
   const skip = (page - 1) * limit;
 
     // temporary solution. Need refactor
