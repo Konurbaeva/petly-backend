@@ -22,7 +22,7 @@ const recoveryTemplate = (recoveryToken) => {
              </tr>
              <td>
                 <div style="text-align: center;">
-                    <a href="${FRONT_END}/recovery?token=${recoveryToken}" target="_blank" style="border: solid 1px #3498db; border-radius: 5px; box-sizing: border-box; 
+                    <a href="${FRONT_END}/recovery/${recoveryToken}" target="_blank" style="border: solid 1px #3498db; border-radius: 5px; box-sizing: border-box; 
                                     cursor: pointer; display: inline-block; font-size: 14px; font-weight: bold; margin: 0; 
                                     padding: 12px 25px; text-decoration: none; text-transform: capitalize; 
                                     background-color: #3498db; border-color: #3498db; color: #ffffff;">Click</a>
