@@ -10,6 +10,7 @@ const { upload } = require('../middlewares/upload')
 const {schemas} = require('../models/userModel')
 const { passport } = require("../middlewares");
 
+// контроллер, который перекидывает на гугл
 router.get("/google", passport.authenticate("google", {
     scope:["email", "profile"]
 }));
