@@ -280,6 +280,69 @@
       }  
     },
 
+    "/api/users/recovery": {
+      "post": {
+        "tags": ["User"],
+        "summary": "Reset password",
+        "parameters": [],
+        "security": [{ "Bearer": [] }],
+        "requestBody": {
+          "description": "Email",
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RecoveryRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Reset password link was sent succesfull"
+          },
+          "400": {
+            "description": "User with this email not found",
+            "content": {}
+          },
+           "500": {
+            "description": "Server error",
+            "content": {}
+          }
+        }
+      }   
+    },
+
+        "/api/users/recovery/{recoveryToken}": {
+      "post": {
+        "tags": ["User"],
+        "summary": "Recovery password",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "recoveryToken",
+            "type": "string",
+            "description": "recoveryToken"
+          }
+        ],
+        "security": [{ "Bearer": [] }],
+       
+        "responses": {
+          "200": {
+            "description": "Password was changed successfull"
+          },
+          "401": {
+            "description": "User not found",
+            "content": {}
+          },
+           "500": {
+            "description": "Server error",
+            "content": {}
+          }
+        }
+      }   
+    },
+
     "/api/services": {
       "get": {
         "tags": ["Services-sidebar"],
@@ -945,6 +1008,18 @@
           
           }
         },
+
+    "RecoveryRequest": {
+        "type": "object",
+        "properties": {
+ 
+          "email": {
+            "type": "string",
+            "description": "User's email",
+            "format": "email"
+          }
+          }
+      },
 
       "NewsResponse": {
          "type": "array",
