@@ -39,7 +39,7 @@ const getMyNotices = async (req, res) => {
 
 const getNoticeById = async (req, res) => {
   const { id } = req.params;
-  const result = await Notices.findOne({ _id: id });
+  const result = await Notices.findOne({ _id: id }).populate("owner", "email phone");
   if (!result) {
     throw RequestError(404, "Not found");
   }
