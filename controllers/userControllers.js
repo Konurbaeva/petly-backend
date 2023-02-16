@@ -191,7 +191,7 @@ const googleController = async (req, res) => {
     { new: true }
   ).populate("pets", "_id name birthday breed photo comments");
   res.redirect(
-    `https://kl0filinj.github.io/goit-project-petly/?token=${userToken}`
+    `https://kl0filinj.github.io/goit-project-petly/user/?token=${userToken}`
   );
 };
 
