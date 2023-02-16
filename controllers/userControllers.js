@@ -190,7 +190,9 @@ const googleController = async (req, res) => {
     { token: userToken },
     { new: true }
   ).populate("pets", "_id name birthday breed photo comments");
-  res.redirect(`kl0filinj.github.io/goit-project-petly?token=${userToken}`);
+  res.redirect(
+    `https://kl0filinj.github.io/goit-project-petly/?token=${userToken}`
+  );
 };
 
 module.exports = {
